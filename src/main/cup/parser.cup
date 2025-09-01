@@ -1,0 +1,147 @@
+package lyc.compiler;
+
+import java_cup.runtime.*;
+
+class Parser;
+
+// Terminals
+/* Identificador */
+terminal ID;
+
+/* Palabras Reservadas */
+terminal ELSE;
+terminal IF;
+terminal DECVAR;
+terminal NOT;
+terminal WHILE;
+terminal ENTRADA;
+terminal SALIDA;
+
+/* Operadores */
+terminal ASIG;
+terminal OP_SUMA;
+terminal OP_RESTA;
+terminal OP_MULT;
+terminal OP_DIV;
+
+/* Operadores Lógicos */
+terminal OPA_AND;
+terminal OPA_OR;
+terminal OPA_NOT;
+terminal OPA_MAY;
+terminal OPA_MEN;
+terminal OPA_IGUAL;
+terminal OPA_MAIG;
+terminal OPA_MEIG;
+
+/* Constantes */
+terminal CTE_E;
+terminal CTE_F;
+terminal CTE_S;
+
+/* Tipos de Dato */
+terminal INT;
+terminal FLOAT;
+terminal STRING;
+
+/* Símbolos */
+terminal LLAV_ABRE;
+terminal LLAV_CIER;
+terminal PAR_ABRE;
+terminal PAR_CIER;
+terminal DOS_PTOS;
+terminal COMA;
+
+// Non Terminals
+non terminal sentence;
+non terminal operation;
+non terminal output;
+non terminal outVal; //Output Value
+non terminal input;
+non terminal ifelse;
+non terminal condition;
+non terminal logExpr; //Logical Expression
+non terminal logOp; //Logical Operator
+non terminal expression;
+non terminal term;
+non terminal factor;
+non terminal assign;
+non terminal while;
+non terminal decBlock; //Declaration Block
+non terminal declaration;
+non terminal dataType;
+non terminal idList;
+
+// Start Symbol Definition
+start with sentence;
+
+// Grammar rules!
+sentence    ::= operation sentence
+            |   operation;
+
+operation   ::= output
+            |   input
+            |   assign
+            |   decBlock
+            |   ifelse
+            |   while;
+
+/* Output */
+output      ::= SALIDA PAR_ABRE outVal PAR_CIER;
+
+outVal      ::= CTE_S:out {: System.out.println(" " + out + " "); :}
+            |   ID:out {: System.out.println(" " + out + " "); :};
+
+/* Input */
+input       ::= ENTRADA PAR_ABRE ID PAR_CIER;
+
+/* Assign */
+assign      ::= ID ASIG expression;
+
+/* Ifelse */
+ifelse      ::= IF PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER
+            |   IF PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER ELSE LLAV_ABRE sentence LLAV_CIER;
+
+condition   ::= logExpr
+            |   OPA_NOT logExpr
+            |   logExpr OPA_AND logExpr
+            |   logExpr OPA_OR logExpr;
+
+logExpr     ::= expression logOp expression;
+
+logOp       ::= OPA_MAY
+            |   OPA_MEN
+            |   OPA_MAIG
+            |   OPA_MEIG
+            |   OPA_IGUAL;
+
+/* Expression */
+expression  ::= expression OP_SUMA term
+            |   expression OP_RESTA term
+            |   term;
+
+term        ::= term OP_MULT factor
+            |   term OP_DIV factor
+            |   factor;
+
+factor      ::= ID
+            |   CTE_E
+            |   CTE_F
+            |   CTE_S
+            |   PAR_ABRE expression PAR_CIER;
+
+/* While */
+while       ::= WHILE PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER;
+
+/* Declaration */
+decBlock    ::= DECVAR LLAV_ABRE declaration LLAV_CIER;
+
+declaration ::= idList DOS_PTOS dataType declaration
+            |   idList DOS_PTOS dataType;
+
+dataType    ::= INT
+            |   FLOAT
+            |   STRING;
+
+idList      ::= ID COMA idList
+            |   ID;

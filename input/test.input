@@ -1,0 +1,54 @@
+#+ Archivo de prueba +#
+
+#+Si descomentamos esto no funciona porque el Lexer interpreta ID ASIG CTE_E CTE_ en vez de ID ASIG CTE_E OP_RESTA CTE_E+#
+#+ a:=2-2 +#
+
+if( a > b )
+{
+    write("Esto es un if")
+    if ( NOT 1 == 1 )
+    {
+        write("Segundo if")
+        write(variable_1)
+        write(VARIABLE-2)
+        if ( (7+2) >= c OR ((2/1)*2+4) == e)
+        {
+            write("Tercer if")
+        }
+        else
+        {
+            write("Con un else ya que estamos")
+        }
+    }
+}
+else
+{
+    write("esto es un else")
+}
+
+#+ Test de Asignación de valores a variables +#
+a := 5
+b := 1
+c := a+b
+d := e/7
+e := a + b - c/d*7850/(13*(14/a-b))
+f := e
+f := f - 1
+
+#+ While test +#
+a := 1
+b := 3
+
+while (a > b)
+{
+    write("a es mas grande que b")
+    a := a + 1
+}
+
+#+ Test de Asignación +#
+a := 99999.99
+a := 99.
+a := .9999
+
+b := "@sdADaSjfla%dfg"
+b := "asldk  fh sjf"

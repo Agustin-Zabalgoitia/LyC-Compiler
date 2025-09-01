@@ -1,0 +1,23 @@
+#+ Archivo de prueba +#
+if( a > b )
+{
+    write("Esto es un if")
+    if ( 1 == 1 )
+    {
+        write("joya")
+        write(variable_1)
+        write(VARIABLE-2)
+        if ( (7+2) >= c OR ((2/1)*2+4) == e)
+        {
+            write("Tercer if")
+        }
+        else
+        {
+            write("Con un else ya que estamos")
+        }
+    }
+}
+else
+{
+    write("esto es un else")
+}
