@@ -4,6 +4,7 @@ package lyc.compiler;
 
 import java_cup.runtime.Symbol;
 import lyc.compiler.ParserSym;
+import lyc.compiler.SymbolTable;
 import lyc.compiler.model.*;
 
 
@@ -252,6 +253,7 @@ public class Lexer implements java_cup.runtime.Scanner {
   private Symbol symbol(int type, Object value) {
     return new Symbol(type, yyline, yycolumn, value);
   }
+  private SymbolTable st = SymbolTable.getSymbolTable();
 
 
   /**
@@ -679,13 +681,15 @@ public class Lexer implements java_cup.runtime.Scanner {
 
                     /*Identificadores*/
                     default:
+                      st.add(yytext(), ParserSym.ID);
                       return symbol(ParserSym.ID, yytext());
                   }
             } 
             // fall through
           case 23: break;
           case 2: 
-            { return symbol(ParserSym.CTE_E, yytext());
+            { st.add(yytext(), ParserSym.CTE_E);
+                  return symbol(ParserSym.CTE_E, yytext());
             } 
             // fall through
           case 24: break;
@@ -725,7 +729,8 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 31: break;
           case 10: 
-            { return symbol(ParserSym.CTE_F, yytext());
+            { st.add(yytext(), ParserSym.CTE_E);
+                  return symbol(ParserSym.CTE_F, yytext());
             } 
             // fall through
           case 32: break;
@@ -780,7 +785,8 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 42: break;
           case 21: 
-            { return symbol(ParserSym.CTE_S, yytext());
+            { st.add(yytext(), ParserSym.CTE_E);
+                  return symbol(ParserSym.CTE_S, yytext());
             } 
             // fall through
           case 43: break;
