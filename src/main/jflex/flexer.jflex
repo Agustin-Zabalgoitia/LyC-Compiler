@@ -2,6 +2,7 @@ package lyc.compiler;
 
 import java_cup.runtime.Symbol;
 import lyc.compiler.ParserSym;
+import lyc.compiler.SymbolTable;
 import lyc.compiler.model.*;
 
 %%
@@ -23,6 +24,7 @@ import lyc.compiler.model.*;
   private Symbol symbol(int type, Object value) {
     return new Symbol(type, yyline, yycolumn, value);
   }
+  private SymbolTable st = SymbolTable.getSymbolTable();
 %}
 
 /* Identificador */
@@ -104,6 +106,7 @@ WHITESPACES = (\s|\t)
 
                     /*Identificadores*/
                     default:
+                      st.add(yytext(), ParserSym.ID);
                       return symbol(ParserSym.ID, yytext());
                   } 
                 }
@@ -124,9 +127,18 @@ WHITESPACES = (\s|\t)
 
 /* Constantes */
 //TODO: Añadir cotas para las constantes
-{CTE_E}         { return symbol(ParserSym.CTE_E, yytext()); }
-{CTE_F}         { return symbol(ParserSym.CTE_F, yytext()); }
-{CTE_S}         { return symbol(ParserSym.CTE_S, yytext()); }
+{CTE_E}         { 
+                  st.add(yytext(), ParserSym.CTE_E);
+                  return symbol(ParserSym.CTE_E, yytext()); 
+                }
+{CTE_F}         { 
+                  st.add(yytext(), ParserSym.CTE_E);
+                  return symbol(ParserSym.CTE_F, yytext()); 
+                }
+{CTE_S}         { 
+                  st.add(yytext(), ParserSym.CTE_E);
+                  return symbol(ParserSym.CTE_S, yytext()); 
+                }
 
 /* Símbolos */
 {PAR_ABRE}      { return symbol(ParserSym.PAR_ABRE); }
