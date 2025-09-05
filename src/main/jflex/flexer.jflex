@@ -103,6 +103,8 @@ WHITESPACES = (\s|\t)
                       return symbol(ParserSym.FLOAT);
                     case "String":
                       return symbol(ParserSym.STRING);
+                    case "Boolean":
+                      return symbol(ParserSym.BOOLEAN);
 
                     /*Identificadores*/
                     default:

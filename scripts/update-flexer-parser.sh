@@ -13,7 +13,7 @@ mv $flexDir/Lexer.java $compDir
 echo "============="
 echo -e "\033[1;33mRunning CUP\033[0m"
 echo "============="
-cup -dump $cupDir/parser.cup
+cup $cupDir/parser.cup
 mv Parser.java $compDir
 mv ParserSym.java $compDir
 echo "===================================="

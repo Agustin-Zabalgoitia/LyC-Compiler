@@ -9,40 +9,40 @@ package lyc.compiler;
 public class ParserSym {
   /* terminals */
   public static final int LLAV_ABRE = 29;
-  public static final int OPA_NOT = 17;
+  public static final int OPA_NOT = 16;
   public static final int ELSE = 3;
-  public static final int INT = 26;
+  public static final int INT = 25;
   public static final int DECVAR = 5;
-  public static final int WHILE = 7;
-  public static final int NOT = 6;
-  public static final int OPA_MEN = 19;
-  public static final int OPA_OR = 16;
+  public static final int WHILE = 6;
+  public static final int OPA_MEN = 18;
+  public static final int OPA_OR = 15;
   public static final int IF = 4;
   public static final int ID = 2;
-  public static final int OPA_MAIG = 21;
-  public static final int OP_SUMA = 11;
+  public static final int OPA_MAIG = 20;
+  public static final int OP_SUMA = 10;
   public static final int PAR_ABRE = 31;
   public static final int LLAV_CIER = 30;
-  public static final int OPA_IGUAL = 20;
+  public static final int BOOLEAN = 28;
+  public static final int OPA_IGUAL = 19;
   public static final int COMA = 34;
-  public static final int STRING = 28;
-  public static final int FLOAT = 27;
+  public static final int STRING = 27;
+  public static final int FLOAT = 26;
   public static final int DOS_PTOS = 33;
   public static final int EOF = 0;
-  public static final int CTE_S = 25;
-  public static final int SALIDA = 9;
-  public static final int OPA_MEIG = 22;
-  public static final int OPA_MAY = 18;
-  public static final int OP_DIV = 14;
+  public static final int CTE_S = 24;
+  public static final int SALIDA = 8;
+  public static final int OPA_MEIG = 21;
+  public static final int OPA_MAY = 17;
+  public static final int OP_DIV = 13;
   public static final int error = 1;
-  public static final int ENTRADA = 8;
-  public static final int OP_MULT = 13;
-  public static final int CTE_F = 24;
-  public static final int OP_RESTA = 12;
-  public static final int CTE_E = 23;
-  public static final int OPA_AND = 15;
+  public static final int ENTRADA = 7;
+  public static final int OP_MULT = 12;
+  public static final int CTE_F = 23;
+  public static final int OP_RESTA = 11;
+  public static final int CTE_E = 22;
+  public static final int OPA_AND = 14;
   public static final int PAR_CIER = 32;
-  public static final int ASIG = 10;
+  public static final int ASIG = 9;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -50,7 +50,6 @@ public class ParserSym {
   "ELSE",
   "IF",
   "DECVAR",
-  "NOT",
   "WHILE",
   "ENTRADA",
   "SALIDA",
@@ -73,6 +72,7 @@ public class ParserSym {
   "INT",
   "FLOAT",
   "STRING",
+  "BOOLEAN",
   "LLAV_ABRE",
   "LLAV_CIER",
   "PAR_ABRE",

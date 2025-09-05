@@ -1,6 +1,7 @@
 package lyc.compiler;
 
 import java_cup.runtime.*;
+import lyc.compiler.utils.TextFormatter;
 
 class Parser;
 
@@ -12,7 +13,6 @@ terminal ID;
 terminal ELSE;
 terminal IF;
 terminal DECVAR;
-terminal NOT;
 terminal WHILE;
 terminal ENTRADA;
 terminal SALIDA;
@@ -43,6 +43,7 @@ terminal CTE_S;
 terminal INT;
 terminal FLOAT;
 terminal STRING;
+terminal BOOLEAN;
 
 /* Símbolos */
 terminal LLAV_ABRE;
@@ -53,10 +54,10 @@ terminal DOS_PTOS;
 terminal COMA;
 
 // Non Terminals
+// We use lowercase, or camelCase if necessary, when defining non terminals
 non terminal sentence;
 non terminal operation;
 non terminal output;
-non terminal outVal; //Output Value
 non terminal input;
 non terminal ifelse;
 non terminal condition;
@@ -71,77 +72,93 @@ non terminal decBlock; //Declaration Block
 non terminal declaration;
 non terminal dataType;
 non terminal idList;
+non terminal beginning;
+non terminal function;
+non terminal exprList; //Expression List
 
 // Start Symbol Definition
-start with sentence;
+start with beginning;
 
 // Grammar rules!
+beginning   ::= decBlock
+            |   decBlock sentence
+            |   sentence;
+
 sentence    ::= operation sentence
             |   operation;
 
 operation   ::= output
             |   input
             |   assign
-            |   decBlock
             |   ifelse
-            |   while;
+            |   while
+            |   function;
 
 /* Output */
-output      ::= SALIDA PAR_ABRE outVal PAR_CIER;
-
-outVal      ::= CTE_S:out {: System.out.println(" " + out + " "); :}
-            |   ID:out {: System.out.println(" " + out + " "); :};
+output      ::= SALIDA PAR_ABRE CTE_S:str PAR_CIER {: TextFormatter.formatAndPrintText("output", "SALIDA PAR_ABRE CTE_S:"+str+" PAR_CIER"); :}
+            |   SALIDA PAR_ABRE ID:id PAR_CIER {: TextFormatter.formatAndPrintText("output", "SALIDA PAR_ABRE ID:"+id+" PAR_CIER"); :}
+            ;
 
 /* Input */
-input       ::= ENTRADA PAR_ABRE ID PAR_CIER;
+input       ::= ENTRADA PAR_ABRE ID:id PAR_CIER {: TextFormatter.formatAndPrintText("input","ENTRADA PAR_ABRE ID:"+id+" PAR_CIER"); :};
 
 /* Assign */
-assign      ::= ID ASIG expression;
+assign      ::= ID:id ASIG expression {: TextFormatter.formatAndPrintText("assign","ID:"+id+" ASIG expression");:};
 
 /* Ifelse */
-ifelse      ::= IF PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER
-            |   IF PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER ELSE LLAV_ABRE sentence LLAV_CIER;
+ifelse      ::= IF PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER {:TextFormatter.formatAndPrintText("ifelse","IF PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER");:}
+            |   IF PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER ELSE LLAV_ABRE sentence LLAV_CIER {:TextFormatter.formatAndPrintText("ifelse","IF PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER ELSE LLAV_ABRE sentence LLAV_CIER");:};
 
 condition   ::= logExpr
-            |   OPA_NOT logExpr
-            |   logExpr OPA_AND logExpr
-            |   logExpr OPA_OR logExpr;
+            |   OPA_NOT logExpr {:TextFormatter.formatAndPrintText("condition","OPA_NOT logExpr");:}
+            |   logExpr OPA_AND logExpr {:TextFormatter.formatAndPrintText("condition","logExpr OPA_AND logExpr");:}
+            |   logExpr OPA_OR logExpr {:TextFormatter.formatAndPrintText("condition","logExpr OPA_OR logExpr");:};
 
-logExpr     ::= expression logOp expression;
+logExpr     ::= expression logOp expression
+            |   expression;
 
-logOp       ::= OPA_MAY
-            |   OPA_MEN
-            |   OPA_MAIG
-            |   OPA_MEIG
-            |   OPA_IGUAL;
+logOp       ::= OPA_MAY {:TextFormatter.formatAndPrintText("logOp","OPA_MAY");:}
+            |   OPA_MEN {:TextFormatter.formatAndPrintText("logOp","OPA_MEN");:}
+            |   OPA_MAIG {:TextFormatter.formatAndPrintText("logOp","OPA_MAIG");:}
+            |   OPA_MEIG {:TextFormatter.formatAndPrintText("logOp","OPA_MEIG");:}
+            |   OPA_IGUAL {:TextFormatter.formatAndPrintText("logOp","OPA_IGUAL");:};
 
 /* Expression */
-expression  ::= expression OP_SUMA term
-            |   expression OP_RESTA term
+expression  ::= expression OP_SUMA term {: TextFormatter.formatAndPrintText("expression","expression OP_SUMA term"); :}
+            |   expression OP_RESTA term {: TextFormatter.formatAndPrintText("expression","expression OP_RESTA term"); :}
             |   term;
 
-term        ::= term OP_MULT factor
-            |   term OP_DIV factor
+term        ::= term OP_MULT factor {: TextFormatter.formatAndPrintText("term","term OP_MULT factor"); :}
+            |   term OP_DIV factor {: TextFormatter.formatAndPrintText("term","term OP_DIV factor"); :}
             |   factor;
 
-factor      ::= ID
-            |   CTE_E
-            |   CTE_F
-            |   CTE_S
+factor      ::= ID:id {: TextFormatter.formatAndPrintText("factor","ID:"+id); :}
+            |   CTE_E:num {: TextFormatter.formatAndPrintText("factor","CTE_E:"+num); :}
+            |   CTE_F:fnum {: TextFormatter.formatAndPrintText("factor","CTE_F:"+fnum); :}
+            |   CTE_S:str {: TextFormatter.formatAndPrintText("factor","CTE_S:"+str); :}
+            |   function
             |   PAR_ABRE expression PAR_CIER;
 
 /* While */
-while       ::= WHILE PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER;
+while       ::= WHILE PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER {: TextFormatter.formatAndPrintText("while", "WHILE PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER "); :};
 
 /* Declaration */
-decBlock    ::= DECVAR LLAV_ABRE declaration LLAV_CIER;
+decBlock    ::= DECVAR LLAV_ABRE declaration LLAV_CIER {: TextFormatter.formatAndPrintText("decBlock", "DECVAR LLAV_ABRE declaration LLAV_CIER"); :};
 
-declaration ::= idList DOS_PTOS dataType declaration
-            |   idList DOS_PTOS dataType;
+declaration ::= idList DOS_PTOS dataType declaration {: TextFormatter.formatAndPrintText("declaration","idList DOS_PTOS dataType declaration"); :}
+            |   idList DOS_PTOS dataType {: TextFormatter.formatAndPrintText("declaration","idList DOS_PTOS dataType"); :};
 
-dataType    ::= INT
-            |   FLOAT
-            |   STRING;
+dataType    ::= INT {: TextFormatter.formatAndPrintText("dataType", "INT"); :}
+            |   FLOAT {: TextFormatter.formatAndPrintText("dataType","FLOAT"); :}
+            |   STRING {: TextFormatter.formatAndPrintText("dataType","STRING"); :}
+            |   BOOLEAN {: TextFormatter.formatAndPrintText("dataType","BOOLEAN"); :};
 
-idList      ::= ID COMA idList
-            |   ID;
+idList      ::= ID:id COMA idList {: TextFormatter.formatAndPrintText("idList", "ID:"+id+" COMA idList"); :} 
+            |   ID:id {: TextFormatter.formatAndPrintText("idList", "ID:"+id); :};
+
+/* Function */
+function    ::= ID:id PAR_ABRE PAR_CIER {: TextFormatter.formatAndPrintText("function", "ID:"+id+" PAR_ABRE PAR_CIER"); :}
+            |   ID:id PAR_ABRE exprList PAR_CIER {: TextFormatter.formatAndPrintText("function", "ID:"+id+" PAR_ABRE exprList PAR_CIER"); :};
+
+exprList    ::= expression COMA exprList {: TextFormatter.formatAndPrintText("exprList", "expression COMA exprList"); :}
+            |   expression;

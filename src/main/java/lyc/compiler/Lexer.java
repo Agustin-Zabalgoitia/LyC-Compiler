@@ -678,6 +678,8 @@ public class Lexer implements java_cup.runtime.Scanner {
                       return symbol(ParserSym.FLOAT);
                     case "String":
                       return symbol(ParserSym.STRING);
+                    case "Boolean":
+                      return symbol(ParserSym.BOOLEAN);
 
                     /*Identificadores*/
                     default:
