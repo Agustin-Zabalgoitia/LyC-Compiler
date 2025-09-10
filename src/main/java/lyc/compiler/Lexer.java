@@ -787,7 +787,7 @@ public class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 42: break;
           case 21: 
-            { st.add(yytext(), ParserSym.CTE_E);
+            { st.add(yytext(), ParserSym.CTE_S);
                   return symbol(ParserSym.CTE_S, yytext());
             } 
             // fall through
