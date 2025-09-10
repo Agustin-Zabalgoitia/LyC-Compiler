@@ -46,12 +46,10 @@ public class SymbolTable {
         switch (type) {
             case ParserSym.ID:
                 row[COL_NAME] = value;
+                row[COL_VALUE] = "—";
                 break;
             case ParserSym.CTE_E:
-                // Convert the integer constant into hexadecimal before storing it in the symbol
-                // table
-                // name = "_" + String.format("%x", value);
-                row[COL_NAME] = "_" + value;
+                row[COL_NAME] = "_0x" + Integer.toHexString(Integer.parseInt(value));
                 row[COL_VALUE] = value;
                 break;
             case ParserSym.CTE_S:
@@ -62,7 +60,6 @@ public class SymbolTable {
             default:
                 break;
         }
-
         if (isRowInTable(row))
             return;
 
