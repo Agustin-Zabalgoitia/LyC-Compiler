@@ -134,10 +134,10 @@ WHITESPACES = (\s|\t)
                   return symbol(ParserSym.CTE_E, yytext()); 
                 }
 {CTE_F}         { 
-                  st.add(yytext(), ParserSym.CTE_E);
+                  st.add(yytext(), ParserSym.CTE_F);
                   return symbol(ParserSym.CTE_F, yytext()); 
                 }
-{CTE_S}         { 
+{CTE_S}         {
                   st.add(yytext(), ParserSym.CTE_S);
                   return symbol(ParserSym.CTE_S, yytext()); 
                 }
