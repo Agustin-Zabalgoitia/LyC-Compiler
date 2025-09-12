@@ -134,7 +134,9 @@ term        ::= term OP_MULT factor {: TextFormatter.formatAndPrintText("term","
 
 factor      ::= ID:id {: TextFormatter.formatAndPrintText("factor","ID:"+id); :}
             |   CTE_E:num {: TextFormatter.formatAndPrintText("factor","CTE_E:"+num); :}
+            |   OP_RESTA CTE_E:num {: TextFormatter.formatAndPrintText("factor","OP_RESTA CTE_E:"+num); :}
             |   CTE_F:fnum {: TextFormatter.formatAndPrintText("factor","CTE_F:"+fnum); :}
+            |   OP_RESTA CTE_F:fnum {: TextFormatter.formatAndPrintText("factor","OP_RESTA CTE_F:"+fnum); :}
             |   CTE_S:str {: TextFormatter.formatAndPrintText("factor","CTE_S:"+str); :}
             |   function
             |   PAR_ABRE expression PAR_CIER;

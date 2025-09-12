@@ -10,7 +10,7 @@
             "request": "launch",
             "args":
             [
-                "input/test.input"
+                "test.txt"
             ],
             "mainClass": "lyc.compiler.Compiler",
             "projectName": "LycCompiler",
