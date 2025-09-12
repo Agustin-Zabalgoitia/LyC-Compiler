@@ -4,6 +4,8 @@ import java_cup.runtime.Symbol;
 import lyc.compiler.ParserSym;
 import lyc.compiler.SymbolTable;
 import lyc.compiler.model.*;
+import java.math.BigInteger;
+import java.math.BigDecimal;
 
 %%
 %public
@@ -24,7 +26,15 @@ import lyc.compiler.model.*;
   private Symbol symbol(int type, Object value) {
     return new Symbol(type, yyline, yycolumn, value);
   }
+
+  private static String cadenaException(String s, int n) {
+
+    s = s.replace("\n", "\\n").replace("\t","\\t");
+    return s.length() <= n ? s : s.substring(0, n-1) + "...";
+  }
+
   private SymbolTable st = SymbolTable.getSymbolTable();
+
 %}
 
 /* Identificador */
@@ -129,16 +139,58 @@ WHITESPACES = (\s|\t)
 {OPA_MEIG}      { return symbol(ParserSym.OPA_MEIG); }
 
 /* Constantes */
-//TODO: Añadir cotas para las constantes
-{CTE_E}         { 
+{CTE_E}         {
+                  int maxIntNumberPostive = 32767;
+                  int minIntNumberNegative = -32768;
+                  java.math.BigInteger num = new java.math.BigInteger(yytext());
+
+                  if(num.compareTo(BigInteger.valueOf(maxIntNumberPostive)) >= 0) {
+
+                      String msg = String.format("error lexico en linea:%d columna:%d => Constante entera numerica (%d) fuera de rango (max %d , min %d)",
+                                                  yyline + 1, yycolumn + 1, num, maxIntNumberPostive, minIntNumberNegative);
+
+                      throw new InvalidIntegerException(msg);
+                  }
+
+                  else if(num.compareTo(BigInteger.valueOf(minIntNumberNegative)) <= 0) {
+
+                      String msg = String.format("error lexico en linea:%d columna:%d => Constante entera numerica (%d) fuera de rango (max %d , min %d)",
+                                                  yyline + 1, yycolumn + 1, num, maxIntNumberPostive, minIntNumberNegative);
+
+                      throw new InvalidIntegerException(msg);
+
+                  }
+
                   st.add(yytext(), ParserSym.CTE_E);
                   return symbol(ParserSym.CTE_E, yytext()); 
                 }
 {CTE_F}         { 
+                  java.math.BigDecimal maxFloat = BigDecimal.valueOf(Float.MAX_VALUE);
+                  java.math.BigDecimal minFloat = BigDecimal.valueOf(Float.MIN_VALUE);
+                  java.math.BigDecimal numFloat = new java.math.BigDecimal(yytext());
+
+                  if(numFloat.compareTo(maxFloat) >= 0)  {
+
+                      String msg = String.format("error lexico en linea:%d columna:%d => Constante flotante numerica (%f) fuera de rango (max %f, min %f)",
+                                                  yyline + 1, yycolumn + 1, numFloat, maxFloat, minFloat);
+
+                      throw new RuntimeException(msg);
+                  }
                   st.add(yytext(), ParserSym.CTE_F);
                   return symbol(ParserSym.CTE_F, yytext()); 
                 }
 {CTE_S}         {
+
+                  int maxLength = 50;
+                  String cadena = yytext();
+                  String c = cadena.substring(1, cadena.length()-1);
+
+                  if(c.length() > maxLength) {
+                      String msg = String.format("error lexico en linea:%d columna:%d => Cadena demasiado larga (max %d, llego %d) => \"%s\"",
+                                                  yyline + 1, yycolumn + 1, maxLength, c.length(), cadenaException(c, 30));
+
+                      throw new InvalidLengthException(msg);
+                  }
                   st.add(yytext(), ParserSym.CTE_S);
                   return symbol(ParserSym.CTE_S, yytext()); 
                 }
@@ -154,3 +206,8 @@ WHITESPACES = (\s|\t)
 /*Otros*/
 {COMENTARIO}    {/* Acá no pasa nada */}
 {WHITESPACES}   {/* Acá tampoco */}
+
+[^]             {
+                  String msg = String.format("error lexico en linea:%d columna %d | El caracter '%s' es invalido.", yyline + 1, yycolumn + 1, yytext());
+                  throw new UnknownCharacterException(msg);
+                }

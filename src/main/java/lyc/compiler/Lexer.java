@@ -6,6 +6,8 @@ import java_cup.runtime.Symbol;
 import lyc.compiler.ParserSym;
 import lyc.compiler.SymbolTable;
 import lyc.compiler.model.*;
+import java.math.BigInteger;
+import java.math.BigDecimal;
 
 
 /**
@@ -56,13 +58,14 @@ public class Lexer implements java_cup.runtime.Scanner {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\1\0\1\1\1\2\1\3\1\0\1\4\1\5\1\6"+
-    "\1\7\1\10\1\11\1\2\1\12\1\0\1\13\1\14"+
-    "\1\15\1\16\1\17\1\20\1\0\1\21\1\22\1\23"+
-    "\1\24\1\12\1\25\1\0\1\12\1\0\1\26";
+    "\1\0\1\1\1\2\1\3\1\4\1\1\1\5\1\6"+
+    "\1\7\1\10\1\11\1\12\1\3\1\13\1\1\1\14"+
+    "\1\15\1\16\1\17\1\20\1\21\1\1\1\22\1\23"+
+    "\1\24\1\25\1\13\1\0\1\26\1\0\1\13\1\0"+
+    "\1\27";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[31];
+    int [] result = new int[33];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -87,13 +90,14 @@ public class Lexer implements java_cup.runtime.Scanner {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\27\0\56\0\105\0\134\0\163\0\163\0\163"+
-    "\0\163\0\212\0\241\0\270\0\317\0\346\0\163\0\163"+
-    "\0\163\0\163\0\163\0\163\0\375\0\163\0\163\0\163"+
-    "\0\163\0\u0114\0\163\0\u012b\0\u0142\0\u0159\0\u012b";
+    "\0\0\0\27\0\56\0\105\0\134\0\163\0\27\0\27"+
+    "\0\27\0\27\0\212\0\241\0\270\0\317\0\346\0\27"+
+    "\0\27\0\27\0\27\0\27\0\27\0\375\0\27\0\27"+
+    "\0\27\0\27\0\u0114\0\346\0\27\0\u012b\0\u0142\0\u0159"+
+    "\0\u012b";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[31];
+    int [] result = new int[33];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -116,16 +120,16 @@ public class Lexer implements java_cup.runtime.Scanner {
   private static final int [] ZZ_TRANS = zzUnpackTrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\0\1\2\1\3\1\4\1\5\1\6\1\7\1\10"+
-    "\1\11\1\12\1\13\1\14\1\15\1\16\1\17\1\20"+
-    "\1\21\1\22\1\23\1\24\1\25\2\17\1\0\2\2"+
-    "\10\0\1\2\15\0\1\3\10\0\1\3\1\15\16\0"+
-    "\1\26\26\0\1\27\55\0\1\30\26\0\1\31\24\0"+
-    "\1\3\10\0\1\3\1\32\14\0\1\15\10\0\1\15"+
-    "\13\0\15\16\1\33\1\0\10\16\5\0\1\34\23\0"+
-    "\1\15\10\0\1\35\13\0\5\34\1\36\10\34\1\0"+
-    "\6\34\1\0\1\34\2\0\1\15\10\0\2\15\12\0"+
-    "\5\34\1\36\10\34\1\0\5\34\1\37\1\0\1\34";
+    "\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11"+
+    "\1\12\1\13\1\14\1\15\1\16\1\17\1\20\1\21"+
+    "\1\22\1\23\1\24\1\25\1\26\2\20\30\0\2\3"+
+    "\10\0\1\3\15\0\1\4\10\0\1\4\1\16\16\0"+
+    "\1\27\26\0\1\30\26\0\1\31\26\0\1\32\24\0"+
+    "\1\4\10\0\1\4\1\33\14\0\1\16\10\0\1\16"+
+    "\13\0\15\34\1\35\1\0\10\34\5\0\1\36\23\0"+
+    "\1\16\10\0\1\37\13\0\5\36\1\40\10\36\1\0"+
+    "\6\36\1\0\1\36\2\0\1\16\10\0\2\16\12\0"+
+    "\5\36\1\40\10\36\1\0\5\36\1\41\1\0\1\36";
 
   private static int [] zzUnpackTrans() {
     int [] result = new int[368];
@@ -166,11 +170,11 @@ public class Lexer implements java_cup.runtime.Scanner {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\1\0\3\1\1\0\4\11\4\1\1\0\6\11\1\0"+
-    "\4\11\1\1\1\11\1\0\1\1\1\0\1\1";
+    "\1\0\1\11\4\1\4\11\5\1\6\11\1\1\4\11"+
+    "\1\1\1\0\1\11\1\0\1\1\1\0\1\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[31];
+    int [] result = new int[33];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -252,7 +256,15 @@ public class Lexer implements java_cup.runtime.Scanner {
   private Symbol symbol(int type, Object value) {
     return new Symbol(type, yyline, yycolumn, value);
   }
+
+  private static String cadenaException(String s, int n) {
+
+    s = s.replace("\n", "\\n").replace("\t","\\t");
+    return s.length() <= n ? s : s.substring(0, n-1) + "...";
+  }
+
   private SymbolTable st = SymbolTable.getSymbolTable();
+
 
 
   /**
@@ -640,6 +652,12 @@ public class Lexer implements java_cup.runtime.Scanner {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1: 
+            { String msg = String.format("error lexico en linea:%d columna %d | El caracter '%s' es invalido.", yyline + 1, yycolumn + 1, yytext());
+                  throw new UnknownCharacterException(msg);
+            } 
+            // fall through
+          case 24: break;
+          case 2: 
             { //En vez de manejar las palabras reservas como tokens del Lexer, las identificamos como ID primero, y después verificamos si son palabras reservadas o no.
                 switch(yytext()){
                   /*Lógica*/
@@ -687,115 +705,157 @@ public class Lexer implements java_cup.runtime.Scanner {
                 }
             } 
             // fall through
-          case 23: break;
-          case 2: 
-            { st.add(yytext(), ParserSym.CTE_E);
+          case 25: break;
+          case 3: 
+            { int maxIntNumberPostive = 32767;
+                  int minIntNumberNegative = -32768;
+                  java.math.BigInteger num = new java.math.BigInteger(yytext());
+
+                  if(num.compareTo(BigInteger.valueOf(maxIntNumberPostive)) >= 0) {
+
+                      String msg = String.format("error lexico en linea:%d columna:%d => Constante entera numerica (%d) fuera de rango (max %d , min %d)",
+                                                  yyline + 1, yycolumn + 1, num, maxIntNumberPostive, minIntNumberNegative);
+
+                      throw new InvalidIntegerException(msg);
+                  }
+
+                  else if(num.compareTo(BigInteger.valueOf(minIntNumberNegative)) <= 0) {
+
+                      String msg = String.format("error lexico en linea:%d columna:%d => Constante entera numerica (%d) fuera de rango (max %d , min %d)",
+                                                  yyline + 1, yycolumn + 1, num, maxIntNumberPostive, minIntNumberNegative);
+
+                      throw new InvalidIntegerException(msg);
+
+                  }
+
+                  st.add(yytext(), ParserSym.CTE_E);
                   return symbol(ParserSym.CTE_E, yytext());
             } 
             // fall through
-          case 24: break;
-          case 3: 
+          case 26: break;
+          case 4: 
             { return symbol(ParserSym.DOS_PTOS);
             } 
             // fall through
-          case 25: break;
-          case 4: 
+          case 27: break;
+          case 5: 
             { return symbol(ParserSym.OP_SUMA);
             } 
             // fall through
-          case 26: break;
-          case 5: 
+          case 28: break;
+          case 6: 
             { return symbol(ParserSym.OP_RESTA);
             } 
             // fall through
-          case 27: break;
-          case 6: 
+          case 29: break;
+          case 7: 
             { return symbol(ParserSym.OP_MULT);
             } 
             // fall through
-          case 28: break;
-          case 7: 
+          case 30: break;
+          case 8: 
             { return symbol(ParserSym.OP_DIV);
             } 
             // fall through
-          case 29: break;
-          case 8: 
+          case 31: break;
+          case 9: 
             { return symbol(ParserSym.OPA_MAY);
             } 
             // fall through
-          case 30: break;
-          case 9: 
+          case 32: break;
+          case 10: 
             { return symbol(ParserSym.OPA_MEN);
             } 
             // fall through
-          case 31: break;
-          case 10: 
-            { st.add(yytext(), ParserSym.CTE_F);
+          case 33: break;
+          case 11: 
+            { java.math.BigDecimal maxFloat = BigDecimal.valueOf(Float.MAX_VALUE);
+                  java.math.BigDecimal minFloat = BigDecimal.valueOf(Float.MIN_VALUE);
+                  java.math.BigDecimal numFloat = new java.math.BigDecimal(yytext());
+
+                  if(numFloat.compareTo(maxFloat) >= 0)  {
+
+                      String msg = String.format("error lexico en linea:%d columna:%d => Constante flotante numerica (%f) fuera de rango (max %f, min %f)",
+                                                  yyline + 1, yycolumn + 1, numFloat, maxFloat, minFloat);
+
+                      throw new RuntimeException(msg);
+                  }
+                  st.add(yytext(), ParserSym.CTE_F);
                   return symbol(ParserSym.CTE_F, yytext());
             } 
             // fall through
-          case 32: break;
-          case 11: 
+          case 34: break;
+          case 12: 
             { /* Acá tampoco */
             } 
             // fall through
-          case 33: break;
-          case 12: 
+          case 35: break;
+          case 13: 
             { return symbol(ParserSym.PAR_ABRE);
             } 
             // fall through
-          case 34: break;
-          case 13: 
+          case 36: break;
+          case 14: 
             { return symbol(ParserSym.PAR_CIER);
             } 
             // fall through
-          case 35: break;
-          case 14: 
+          case 37: break;
+          case 15: 
             { return symbol(ParserSym.LLAV_ABRE);
             } 
             // fall through
-          case 36: break;
-          case 15: 
+          case 38: break;
+          case 16: 
             { return symbol(ParserSym.LLAV_CIER);
             } 
             // fall through
-          case 37: break;
-          case 16: 
+          case 39: break;
+          case 17: 
             { return symbol(ParserSym.COMA);
             } 
             // fall through
-          case 38: break;
-          case 17: 
+          case 40: break;
+          case 18: 
             { return symbol(ParserSym.ASIG);
             } 
             // fall through
-          case 39: break;
-          case 18: 
+          case 41: break;
+          case 19: 
             { return symbol(ParserSym.OPA_IGUAL);
             } 
             // fall through
-          case 40: break;
-          case 19: 
+          case 42: break;
+          case 20: 
             { return symbol(ParserSym.OPA_MAIG);
             } 
             // fall through
-          case 41: break;
-          case 20: 
+          case 43: break;
+          case 21: 
             { return symbol(ParserSym.OPA_MEIG);
             } 
             // fall through
-          case 42: break;
-          case 21: 
-            { st.add(yytext(), ParserSym.CTE_S);
+          case 44: break;
+          case 22: 
+            { int maxLength = 50;
+                  String cadena = yytext();
+                  String c = cadena.substring(1, cadena.length()-1);
+
+                  if(c.length() > maxLength) {
+                      String msg = String.format("error lexico en linea:%d columna:%d => Cadena demasiado larga (max %d, llego %d) => \"%s\"",
+                                                  yyline + 1, yycolumn + 1, maxLength, c.length(), cadenaException(c, 30));
+
+                      throw new InvalidLengthException(msg);
+                  }
+                  st.add(yytext(), ParserSym.CTE_S);
                   return symbol(ParserSym.CTE_S, yytext());
             } 
             // fall through
-          case 43: break;
-          case 22: 
+          case 45: break;
+          case 23: 
             { /* Acá no pasa nada */
             } 
             // fall through
-          case 44: break;
+          case 46: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }

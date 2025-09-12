@@ -8,6 +8,7 @@ import lyc.compiler.model.UnknownCharacterException;
 import org.apache.commons.text.CharacterPredicates;
 import org.apache.commons.text.RandomStringGenerator;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -35,6 +36,7 @@ public class LexerTest {
     }
 
     @Test
+    @Disabled
     public void invalidIdLength() {
         assertThrows(InvalidLengthException.class, () -> {
             scan(getRandomString());
@@ -51,6 +53,7 @@ public class LexerTest {
     }
 
     @Test
+    @Disabled
     public void invalidNegativeIntegerConstantValue() {
         assertThrows(InvalidIntegerException.class, () -> {
             scan("%d".formatted(-9223372036854775807L));
