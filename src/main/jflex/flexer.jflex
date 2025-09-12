@@ -28,7 +28,7 @@ import lyc.compiler.model.*;
 %}
 
 /* Identificador */
-ID          = [A-Za-z]+([A-Za-z]|[0-9]|-|_)*
+ID          = [A-Za-z]+([A-Za-z]|[0-9])*
 
 /* Operadores */
 ASIG        = :=
@@ -45,8 +45,8 @@ OPA_MAIG    = ">="
 OPA_MEIG    = "<="
 
 /* Constantes */
-CTE_E       = -?[0-9]+ //Constante entera
-CTE_F       = -?(0"."0|([0-9][0-9]*)?)"."[0-9]* //Constante flotante
+CTE_E       = [0-9]+ //Constante entera
+CTE_F       = (0"."0|([0-9][0-9]*)?)"."[0-9]* //Constante flotante
 CTE_S       = (\"[^\"\n]*\") //Constante string
 
 /* Símbolos */
@@ -65,53 +65,54 @@ COMENTARIO  = (#\+.*\+#) //Debería de soportar cualquier nivel de profundidad
 WHITESPACES = (\s|\t)
 
 %%
+
 {ID}            { 
-                  //En vez de manejar las palabras reservas como tokens del Lexer, las identificamos como ID primero, y después verificamos si son palabras reservadas o no.
-                  switch(yytext()){
-                    /*Lógica*/
-                    case "AND":
-                      return symbol(ParserSym.OPA_AND);
-                    case "OR":
-                      return symbol(ParserSym.OPA_OR);
-                    case "NOT":
-                      return symbol(ParserSym.OPA_NOT);
+                //En vez de manejar las palabras reservas como tokens del Lexer, las identificamos como ID primero, y después verificamos si son palabras reservadas o no.
+                switch(yytext()){
+                  /*Lógica*/
+                  case "AND":
+                    return symbol(ParserSym.OPA_AND);
+                  case "OR":
+                    return symbol(ParserSym.OPA_OR);
+                  case "NOT":
+                    return symbol(ParserSym.OPA_NOT);
 
-                    /*Ifelse*/
-                    case "if":
-                      return symbol(ParserSym.IF);
-                    case "else":
-                      return symbol(ParserSym.ELSE);
+                  /*Ifelse*/
+                  case "if":
+                    return symbol(ParserSym.IF);
+                  case "else":
+                    return symbol(ParserSym.ELSE);
 
-                    /*Bloque de Declaración de Variables*/
-                    case "init":
-                      return symbol(ParserSym.DECVAR);
+                  /*Bloque de Declaración de Variables*/
+                  case "init":
+                    return symbol(ParserSym.DECVAR);
 
-                    /*While*/
-                    case "while":
-                      return symbol(ParserSym.WHILE);
+                  /*While*/
+                  case "while":
+                    return symbol(ParserSym.WHILE);
 
-                    /*Entrada y Salida*/
-                    case "read":
-                      return symbol(ParserSym.ENTRADA);
-                    case "write":
-                      return symbol(ParserSym.SALIDA);
+                  /*Entrada y Salida*/
+                  case "read":
+                    return symbol(ParserSym.ENTRADA);
+                  case "write":
+                    return symbol(ParserSym.SALIDA);
 
-                    /*Tipo de Datos*/
-                    case "Int":
-                      return symbol(ParserSym.INT);
-                    case "Float":
-                      return symbol(ParserSym.FLOAT);
-                    case "String":
-                      return symbol(ParserSym.STRING);
-                    case "Boolean":
-                      return symbol(ParserSym.BOOLEAN);
+                  /*Tipo de Datos*/
+                  case "Int":
+                    return symbol(ParserSym.INT);
+                  case "Float":
+                    return symbol(ParserSym.FLOAT);
+                  case "String":
+                    return symbol(ParserSym.STRING);
+                  case "Boolean":
+                    return symbol(ParserSym.BOOLEAN);
 
-                    /*Identificadores*/
-                    default:
-                      st.add(yytext(), ParserSym.ID);
-                      return symbol(ParserSym.ID, yytext());
-                  } 
-                }
+                  /*Identificadores*/
+                  default:
+                    st.add(yytext(), ParserSym.ID);
+                    return symbol(ParserSym.ID, yytext());
+                } 
+              }
 
 /* Operadores */
 {ASIG}          { return symbol(ParserSym.ASIG); }
