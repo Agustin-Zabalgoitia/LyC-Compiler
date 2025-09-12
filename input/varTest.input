@@ -1,8 +1,0 @@
-#+ Test de Asignación de valores a variables +#
-a := 5
-b := 1
-c := a+b
-d := e/7
-e := a + b - c/d*7850/(13*(14/a-b))
-f := e
-f := f - 1

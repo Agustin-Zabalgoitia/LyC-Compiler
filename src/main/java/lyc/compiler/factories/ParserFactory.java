@@ -6,8 +6,7 @@ import java.io.Reader;
 
 public final class ParserFactory {
 
-    private ParserFactory() {
-    }
+    private ParserFactory(){}
 
     public static Parser create(String input) {
         return new Parser(LexerFactory.create(input));
@@ -16,5 +15,6 @@ public final class ParserFactory {
     public static Parser create(Reader reader) {
         return new Parser(LexerFactory.create(reader));
     }
+
 
 }

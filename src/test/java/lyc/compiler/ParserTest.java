@@ -79,11 +79,12 @@ public class ParserTest {
         compilationSuccessful(readFromFile("while.txt"));
     }
 
+
     private void compilationSuccessful(String input) throws Exception {
         assertThat(scan(input).sym).isEqualTo(ParserSym.EOF);
     }
 
-    private void compilationError(String input) {
+    private void compilationError(String input){
         assertThrows(Exception.class, () -> scan(input));
     }
 
@@ -96,5 +97,6 @@ public class ParserTest {
         assertThat(url).isNotNull();
         return IOUtils.toString(url.openStream(), StandardCharsets.UTF_8);
     }
+
 
 }

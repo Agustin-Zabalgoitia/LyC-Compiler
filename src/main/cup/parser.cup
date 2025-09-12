@@ -155,7 +155,7 @@ dataType    ::= INT {: TextFormatter.formatAndPrintText("dataType", "INT"); :}
             |   STRING {: TextFormatter.formatAndPrintText("dataType","STRING"); :}
             |   BOOLEAN {: TextFormatter.formatAndPrintText("dataType","BOOLEAN"); :};
 
-idList      ::= ID:id COMA idList {: TextFormatter.formatAndPrintText("idList", "ID:"+id+" COMA idList"); :} 
+idList      ::= ID:id COMA idList {: TextFormatter.formatAndPrintText("idList", "ID:"+id+" COMA idList"); :}
             |   ID:id {: TextFormatter.formatAndPrintText("idList", "ID:"+id); :};
 
 /* Function */

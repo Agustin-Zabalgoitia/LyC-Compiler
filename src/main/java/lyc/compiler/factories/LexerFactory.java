@@ -7,8 +7,7 @@ import java.io.StringReader;
 
 public final class LexerFactory {
 
-    private LexerFactory() {
-    }
+    private LexerFactory() {}
 
     public static Lexer create(String input) {
         Reader reader = new StringReader(input);
