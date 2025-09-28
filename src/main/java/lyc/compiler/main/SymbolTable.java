@@ -42,7 +42,7 @@ public class SymbolTable {
     }
 
     public void add(String value, int type) {
-        String row[] = { "", "", "", "" };
+        String[] row = { "", "", "", "" };
         switch (type) {
             case ParserSym.ID:
                 row[COL_NAME] = value;
@@ -51,12 +51,18 @@ public class SymbolTable {
             case ParserSym.CTE_E:
                 row[COL_NAME] = "_0x" + Integer.toHexString(Integer.parseInt(value));
                 row[COL_VALUE] = value;
+                row[COL_DATA_TYPE] = "CTE_INTEGER";
                 break;
             case ParserSym.CTE_S:
                 row[COL_LENGTH] = "" + value.length();
+                row[COL_NAME] = "_" + value;
+                row[COL_VALUE] = value;
+                row[COL_DATA_TYPE] = "CTE_STRING";
+                break;
             case ParserSym.CTE_F:
                 row[COL_NAME] = "_" + value;
                 row[COL_VALUE] = value;
+                row[COL_DATA_TYPE] = "CTE_FLOAT";
             default:
                 break;
         }
