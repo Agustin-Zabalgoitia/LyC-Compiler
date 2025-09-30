@@ -109,6 +109,13 @@ WHITESPACES = {LineTerminator} | {Identation}
                   case "write":
                     return symbol(ParserSym.SALIDA);
 
+                /* Funciones Especiales */
+                    case "isZero":
+                        return  symbol(ParserSym.IS_ZERO);
+
+                    case "equalExpressions":
+                        return  symbol(ParserSym.EQUAL_EXPR);
+
                   /*Tipo de Datos*/
                   case "Int":
                     return symbol(ParserSym.INT);

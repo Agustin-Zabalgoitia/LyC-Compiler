@@ -17,6 +17,7 @@
 #+ Profesor Asignado:   Daniel         +#
 #+#+#+#+#+#+#+#+#+#+ +#+#+#+#+#+#+#+#+#+#
 
+
 #+ Bloque de declaración de variables +#
 init {
     a,b,c: String #+ Las variables se pueden declarar como una lista+#
