@@ -9,6 +9,10 @@ class Parser;
 /* Identificador */
 terminal ID;
 
+/* Funciones Especiales */
+terminal EQUAL_EXPR;
+terminal IS_ZERO;
+
 /* Palabras Reservadas */
 terminal ELSE;
 terminal IF;
@@ -74,6 +78,7 @@ non terminal dataType;
 non terminal idList;
 non terminal beginning;
 non terminal function;
+non terminal espFunction;
 non terminal exprList; //Expression List
 
 // Start Symbol Definition
@@ -159,8 +164,9 @@ idList      ::= ID:id COMA idList {: TextFormatter.formatAndPrintText("idList", 
             |   ID:id {: TextFormatter.formatAndPrintText("idList", "ID:"+id); :};
 
 /* Function */
-function    ::= ID:id PAR_ABRE PAR_CIER {: TextFormatter.formatAndPrintText("function", "ID:"+id+" PAR_ABRE PAR_CIER"); :}
-            |   ID:id PAR_ABRE exprList PAR_CIER {: TextFormatter.formatAndPrintText("function", "ID:"+id+" PAR_ABRE exprList PAR_CIER"); :};
+function    ::= espFunction PAR_ABRE exprList PAR_CIER {: TextFormatter.formatAndPrintText("function", "espFunction PAR_ABRE exprList PAR_CIER"); :};
+
+espFunction ::= EQUAL_EXPR | IS_ZERO;
 
 exprList    ::= expression COMA exprList {: TextFormatter.formatAndPrintText("exprList", "expression COMA exprList"); :}
             |   expression;
