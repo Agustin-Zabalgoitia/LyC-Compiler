@@ -2,8 +2,12 @@ package lyc.compiler;
 
 import java_cup.runtime.*;
 import lyc.compiler.utils.TextFormatter;
+import lyc.compiler.main.PolishArray;
 
 class Parser;
+
+action code {: PolishArray pa = PolishArray.getPolishArray(); :}
+//parser code {::}
 
 // Terminals
 /* Identificador */
@@ -108,7 +112,7 @@ output      ::= SALIDA PAR_ABRE CTE_S:str PAR_CIER {: TextFormatter.formatAndPri
 input       ::= ENTRADA PAR_ABRE ID:id PAR_CIER {: TextFormatter.formatAndPrintText("input","ENTRADA PAR_ABRE ID:"+id+" PAR_CIER"); :};
 
 /* Assign */
-assign      ::= ID:id ASIG expression {: TextFormatter.formatAndPrintText("assign","ID:"+id+" ASIG expression");:};
+assign      ::= ID:id ASIG expression {: TextFormatter.formatAndPrintText("assign","ID:"+id+" ASIG expression"); pa.add(""+id); pa.add(":="); :};
 
 /* Ifelse */
 ifelse      ::= IF PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER {:TextFormatter.formatAndPrintText("ifelse","IF PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER");:}
@@ -129,21 +133,21 @@ logOp       ::= OPA_MAY {:TextFormatter.formatAndPrintText("logOp","OPA_MAY");:}
             |   OPA_IGUAL {:TextFormatter.formatAndPrintText("logOp","OPA_IGUAL");:};
 
 /* Expression */
-expression  ::= expression OP_SUMA term {: TextFormatter.formatAndPrintText("expression","expression OP_SUMA term"); :}
-            |   expression OP_RESTA term {: TextFormatter.formatAndPrintText("expression","expression OP_RESTA term"); :}
+expression  ::= expression OP_SUMA term {: TextFormatter.formatAndPrintText("expression","expression OP_SUMA term"); pa.add("+"); :}
+            |   expression OP_RESTA term {: TextFormatter.formatAndPrintText("expression","expression OP_RESTA term"); pa.add("-"); :}
             |   term;
 
-term        ::= term OP_MULT factor {: TextFormatter.formatAndPrintText("term","term OP_MULT factor"); :}
-            |   term OP_DIV factor {: TextFormatter.formatAndPrintText("term","term OP_DIV factor"); :}
+term        ::= term OP_MULT factor {: TextFormatter.formatAndPrintText("term","term OP_MULT factor"); pa.add("*"); :}
+            |   term OP_DIV factor {: TextFormatter.formatAndPrintText("term","term OP_DIV factor"); pa.add("/"); :}
             |   factor;
 
-factor      ::= ID:id {: TextFormatter.formatAndPrintText("factor","ID:"+id); :}
-            |   CTE_E:num {: TextFormatter.formatAndPrintText("factor","CTE_E:"+num); :}
-            |   OP_RESTA CTE_E:num {: TextFormatter.formatAndPrintText("factor","OP_RESTA CTE_E:"+num); :}
-            |   CTE_F:fnum {: TextFormatter.formatAndPrintText("factor","CTE_F:"+fnum); :}
-            |   OP_RESTA CTE_F:fnum {: TextFormatter.formatAndPrintText("factor","OP_RESTA CTE_F:"+fnum); :}
-            |   CTE_S:str {: TextFormatter.formatAndPrintText("factor","CTE_S:"+str); :}
-            |   function
+factor      ::= ID:id {: TextFormatter.formatAndPrintText("factor","ID:"+id); pa.add(""+id); :}
+            |   CTE_E:num  {: TextFormatter.formatAndPrintText("factor","CTE_E:"+num); pa.add(""+num); :}
+            |   OP_RESTA CTE_E:num {: TextFormatter.formatAndPrintText("factor","OP_RESTA CTE_E:"+num); pa.add("-"+num); :}
+            |   CTE_F:fnum {: TextFormatter.formatAndPrintText("factor","CTE_F:"+fnum); pa.add(""+fnum); :}
+            |   OP_RESTA CTE_F:fnum {: TextFormatter.formatAndPrintText("factor","OP_RESTA CTE_F:"+fnum); pa.add("-"+fnum); :}
+            |   CTE_S:str {: TextFormatter.formatAndPrintText("factor","CTE_S:"+str); pa.add(""+str); :}
+            |   function //TODO: remove this. Functions shouldn't be expressions. We'll only support boolean functions. It makes no sense to have this here.
             |   PAR_ABRE expression PAR_CIER;
 
 /* While */
