@@ -3,6 +3,7 @@ package lyc.compiler;
 import java_cup.runtime.*;
 import lyc.compiler.utils.TextFormatter;
 import lyc.compiler.main.PolishArray;
+import lyc.compiler.main.Labels;
 
 class Parser;
 
@@ -84,14 +85,19 @@ non terminal beginning;
 non terminal function;
 non terminal espFunction;
 non terminal exprList; //Expression List
+non terminal isZero;
+non terminal equalExpressions;
+non terminal auxCond;
+non terminal auxSent;
+non terminal auxSentElse;
 
 // Start Symbol Definition
 start with beginning;
 
 // Grammar rules!
-beginning   ::= decBlock
-            |   decBlock sentence
-            |   sentence;
+beginning   ::= decBlock {:pa.add("");:}
+            |   decBlock sentence {:pa.add("");:}
+            |   sentence {:pa.add("");:};
 
 sentence    ::= operation sentence
             |   operation;
@@ -115,22 +121,41 @@ input       ::= ENTRADA PAR_ABRE ID:id PAR_CIER {: TextFormatter.formatAndPrintT
 assign      ::= ID:id ASIG expression {: TextFormatter.formatAndPrintText("assign","ID:"+id+" ASIG expression"); pa.add(""+id); pa.add(":="); :};
 
 /* Ifelse */
-ifelse      ::= IF PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER {:TextFormatter.formatAndPrintText("ifelse","IF PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER");:}
-            |   IF PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER ELSE LLAV_ABRE sentence LLAV_CIER {:TextFormatter.formatAndPrintText("ifelse","IF PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER ELSE LLAV_ABRE sentence LLAV_CIER");:};
+ifelse      ::= IF PAR_ABRE auxCond PAR_CIER LLAV_ABRE auxSent LLAV_CIER {:TextFormatter.formatAndPrintText("ifelse","IF PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER"); pa.writePosition(); :}
+            |   IF PAR_ABRE auxCond PAR_CIER LLAV_ABRE auxSent LLAV_CIER ELSE LLAV_ABRE sentence LLAV_CIER {:TextFormatter.formatAndPrintText("ifelse","IF PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER ELSE LLAV_ABRE sentence LLAV_CIER"); pa.writePosition(); :};
+
+auxCond     ::= condition {:
+                            pa.add(Labels.CMP);
+                            //pa.add(Labels.BGE);
+                            pa.writeOperator();
+                            pa.advance();
+                          :};
+
+auxSent     ::= sentence;
+
+auxSentElse ::= sentence {:
+                            pa.add(Labels.BI);
+                            pa.writeNextPosition();
+                            pa.writePositionOnAllBlanks();
+                         :};
 
 condition   ::= logExpr
-            |   OPA_NOT logExpr {:TextFormatter.formatAndPrintText("condition","OPA_NOT logExpr");:}
-            |   logExpr OPA_AND logExpr {:TextFormatter.formatAndPrintText("condition","logExpr OPA_AND logExpr");:}
+            |   OPA_NOT {:pa.stackOperator(Labels.NOT);:} logExpr {:TextFormatter.formatAndPrintText("condition","OPA_NOT logExpr");:}
+            |   logExpr {:pa.add(Labels.CMP);pa.writeOperator();pa.advance();:} OPA_AND logExpr {:TextFormatter.formatAndPrintText("condition","logExpr OPA_AND logExpr");:}
             |   logExpr OPA_OR logExpr {:TextFormatter.formatAndPrintText("condition","logExpr OPA_OR logExpr");:};
 
 logExpr     ::= expression logOp expression
+            |   expression logOp function
+            |   function logOp expression
+            |   function logOp function
+            |   function
             |   expression;
 
-logOp       ::= OPA_MAY {:TextFormatter.formatAndPrintText("logOp","OPA_MAY");:}
-            |   OPA_MEN {:TextFormatter.formatAndPrintText("logOp","OPA_MEN");:}
-            |   OPA_MAIG {:TextFormatter.formatAndPrintText("logOp","OPA_MAIG");:}
-            |   OPA_MEIG {:TextFormatter.formatAndPrintText("logOp","OPA_MEIG");:}
-            |   OPA_IGUAL {:TextFormatter.formatAndPrintText("logOp","OPA_IGUAL");:};
+logOp       ::= OPA_MAY {:pa.stackOperator(Labels.BLE);:} {:TextFormatter.formatAndPrintText("logOp","OPA_MAY");:}
+            |   OPA_MEN {:pa.stackOperator(Labels.BGE);:} {:TextFormatter.formatAndPrintText("logOp","OPA_MEN");:}
+            |   OPA_MAIG {:pa.stackOperator(Labels.BLT);:} {:TextFormatter.formatAndPrintText("logOp","OPA_MAIG");:}
+            |   OPA_MEIG {:pa.stackOperator(Labels.BGT);:} {:TextFormatter.formatAndPrintText("logOp","OPA_MEIG");:}
+            |   OPA_IGUAL {:pa.stackOperator(Labels.BNE);:} {:TextFormatter.formatAndPrintText("logOp","OPA_IGUAL");:};
 
 /* Expression */
 expression  ::= expression OP_SUMA term {: TextFormatter.formatAndPrintText("expression","expression OP_SUMA term"); pa.add("+"); :}
@@ -147,7 +172,6 @@ factor      ::= ID:id {: TextFormatter.formatAndPrintText("factor","ID:"+id); pa
             |   CTE_F:fnum {: TextFormatter.formatAndPrintText("factor","CTE_F:"+fnum); pa.add(""+fnum); :}
             |   OP_RESTA CTE_F:fnum {: TextFormatter.formatAndPrintText("factor","OP_RESTA CTE_F:"+fnum); pa.add("-"+fnum); :}
             |   CTE_S:str {: TextFormatter.formatAndPrintText("factor","CTE_S:"+str); pa.add(""+str); :}
-            |   function //TODO: remove this. Functions shouldn't be expressions. We'll only support boolean functions. It makes no sense to have this here.
             |   PAR_ABRE expression PAR_CIER;
 
 /* While */
@@ -168,7 +192,8 @@ idList      ::= ID:id COMA idList {: TextFormatter.formatAndPrintText("idList", 
             |   ID:id {: TextFormatter.formatAndPrintText("idList", "ID:"+id); :};
 
 /* Function */
-function    ::= espFunction PAR_ABRE exprList PAR_CIER {: TextFormatter.formatAndPrintText("function", "espFunction PAR_ABRE exprList PAR_CIER"); :};
+function    ::= IS_ZERO PAR_ABRE expression PAR_CIER {: TextFormatter.formatAndPrintText("function", "IS_ZERO PAR_ABRE expression PAR_CIER"); :}
+            |   EQUAL_EXPR PAR_ABRE exprList PAR_CIER {: TextFormatter.formatAndPrintText("function", "EQUAL_EXPR PAR_ABRE exprList PAR_CIER"); :};
 
 espFunction ::= EQUAL_EXPR | IS_ZERO;
 

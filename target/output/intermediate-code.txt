@@ -1,64 +1,16 @@
-0
-n1
-:=
-10
-n2
-:=
-1
-10
-1
--
-n2
-:=
--21
-n3
-:=
-b
-"Esto es una constante string"
-variable1
-18652.
-2
-2
-0
-+
-/
-1
-variable1
-n3
-n1
-n2
--
-n3
-+
-.10864
-VARIABLE2
-:=
-n1
-n2
-"|@{[]@#~ßðđŋ½ 5423g dsfg}g 15rwe 06df5s4."
-c
-:=
-789.3210500
-VARIABLE2
-:=
-2
-2
-+
-3.3
-7
-n3
--
-/
-12
-*
-1
-1
-2
-/
-+
-n4
--
-*
--
-n1
-:=
+LINEA | INSTRUCCIÓN
+-----------------------
+0     | a         
+1     | b         
+2     | CMP       
+3     | BLE       
+4     |           
+5     | c         
+6     | d         
+7     | CMP       
+8     | BNE       
+9     | 13        
+10    | consecuencia
+11    | pepe      
+12    | :=        
+13    |           
