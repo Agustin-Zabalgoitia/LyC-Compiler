@@ -1,14 +1,13 @@
 LINEA | INSTRUCCIÓN
 -----------------------
-0     | ET        
-1     | a         
-2     | b         
+0     | a         
+1     | b         
+2     | -         
 3     | CMP       
-4     | BLE       
-5     | 11        
-6     | consecuencia
-7     | pepe      
-8     | :=        
-9     | BI        
-10    | 0         
-11    |           
+4     | BNE       
+5     | 10        
+6     | TRUE      
+7     | BI        
+8     | 10        
+9     | FALSE     
+10    |           

@@ -110,12 +110,12 @@ operation   ::= output
             |   function;
 
 /* Output */
-output      ::= SALIDA PAR_ABRE CTE_S:str PAR_CIER {: TextFormatter.formatAndPrintText("output", "SALIDA PAR_ABRE CTE_S:"+str+" PAR_CIER"); :}
-            |   SALIDA PAR_ABRE ID:id PAR_CIER {: TextFormatter.formatAndPrintText("output", "SALIDA PAR_ABRE ID:"+id+" PAR_CIER"); :}
+output      ::= SALIDA PAR_ABRE CTE_S:str PAR_CIER {:pa.add(""+str);pa.add("WRITE"); TextFormatter.formatAndPrintText("output", "SALIDA PAR_ABRE CTE_S:"+str+" PAR_CIER"); :}
+            |   SALIDA PAR_ABRE ID:id PAR_CIER {:pa.add(""+id);pa.add("WRITE"); TextFormatter.formatAndPrintText("output", "SALIDA PAR_ABRE ID:"+id+" PAR_CIER"); :}
             ;
 
 /* Input */
-input       ::= ENTRADA PAR_ABRE ID:id PAR_CIER {: TextFormatter.formatAndPrintText("input","ENTRADA PAR_ABRE ID:"+id+" PAR_CIER"); :};
+input       ::= ENTRADA PAR_ABRE ID:id PAR_CIER {:pa.add(""+id);pa.add("READ"); TextFormatter.formatAndPrintText("input","ENTRADA PAR_ABRE ID:"+id+" PAR_CIER"); :};
 
 /* Assign */
 assign      ::= ID:id ASIG expression {: TextFormatter.formatAndPrintText("assign","ID:"+id+" ASIG expression"); pa.add(""+id); pa.add(":="); :};
@@ -187,7 +187,7 @@ idList      ::= ID:id COMA idList {: TextFormatter.formatAndPrintText("idList", 
             |   ID:id {: TextFormatter.formatAndPrintText("idList", "ID:"+id); :};
 
 /* Function */
-function    ::= IS_ZERO PAR_ABRE expression PAR_CIER {: TextFormatter.formatAndPrintText("function", "IS_ZERO PAR_ABRE expression PAR_CIER"); :}
+function    ::= IS_ZERO PAR_ABRE expression PAR_CIER {:pa.add(Labels.CMP);pa.add(Labels.BNE);pa.advance();pa.add("TRUE");pa.add(Labels.BI);pa.advance();pa.add("FALSE");pa.writePositionOnAllBlanks();:} {: TextFormatter.formatAndPrintText("function", "IS_ZERO PAR_ABRE expression PAR_CIER"); :}
             |   EQUAL_EXPR PAR_ABRE exprList PAR_CIER {: TextFormatter.formatAndPrintText("function", "EQUAL_EXPR PAR_ABRE exprList PAR_CIER"); :};
 
 espFunction ::= EQUAL_EXPR | IS_ZERO;

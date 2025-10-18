@@ -1,5 +1,3 @@
 Nombre, TipoDato, Valor, Longitud
 a, , —, , 
 b, , —, , 
-pepe, , —, , 
-consecuencia, , —, , 
