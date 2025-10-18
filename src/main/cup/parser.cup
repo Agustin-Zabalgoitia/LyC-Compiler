@@ -121,15 +121,10 @@ input       ::= ENTRADA PAR_ABRE ID:id PAR_CIER {: TextFormatter.formatAndPrintT
 assign      ::= ID:id ASIG expression {: TextFormatter.formatAndPrintText("assign","ID:"+id+" ASIG expression"); pa.add(""+id); pa.add(":="); :};
 
 /* Ifelse */
-ifelse      ::= IF PAR_ABRE auxCond PAR_CIER LLAV_ABRE auxSent LLAV_CIER {:TextFormatter.formatAndPrintText("ifelse","IF PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER"); pa.writePosition(); :}
-            |   IF PAR_ABRE auxCond PAR_CIER LLAV_ABRE auxSent LLAV_CIER ELSE LLAV_ABRE sentence LLAV_CIER {:TextFormatter.formatAndPrintText("ifelse","IF PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER ELSE LLAV_ABRE sentence LLAV_CIER"); pa.writePosition(); :};
+ifelse      ::= IF PAR_ABRE auxCond PAR_CIER LLAV_ABRE auxSent LLAV_CIER {:pa.writePositionOnAllBlanks();:} {:TextFormatter.formatAndPrintText("ifelse","IF PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER");:}
+            |   IF PAR_ABRE auxCond PAR_CIER LLAV_ABRE auxSent LLAV_CIER ELSE LLAV_ABRE sentence LLAV_CIER {:pa.writePositionOnAllBlanks();:} {:TextFormatter.formatAndPrintText("ifelse","IF PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER ELSE LLAV_ABRE sentence LLAV_CIER");:};
 
-auxCond     ::= condition {:
-                            pa.add(Labels.CMP);
-                            //pa.add(Labels.BGE);
-                            pa.writeOperator();
-                            pa.advance();
-                          :};
+auxCond     ::= condition;
 
 auxSent     ::= sentence;
 
@@ -139,10 +134,10 @@ auxSentElse ::= sentence {:
                             pa.writePositionOnAllBlanks();
                          :};
 
-condition   ::= logExpr
-            |   OPA_NOT {:pa.stackOperator(Labels.NOT);:} logExpr {:TextFormatter.formatAndPrintText("condition","OPA_NOT logExpr");:}
-            |   logExpr {:pa.add(Labels.CMP);pa.writeOperator();pa.advance();:} OPA_AND logExpr {:TextFormatter.formatAndPrintText("condition","logExpr OPA_AND logExpr");:}
-            |   logExpr OPA_OR logExpr {:TextFormatter.formatAndPrintText("condition","logExpr OPA_OR logExpr");:};
+condition   ::= logExpr {:pa.add(Labels.CMP);pa.writeOperator();pa.advance();:}
+            |   OPA_NOT {:pa.stackOperator(Labels.NOT);:} logExpr {:pa.add(Labels.CMP);pa.writeOperator();pa.advance();:} {:TextFormatter.formatAndPrintText("condition","OPA_NOT logExpr");:}
+            |   logExpr {:pa.add(Labels.CMP);pa.writeOperator();pa.advance();:} OPA_AND logExpr {:pa.add(Labels.CMP);pa.writeOperator();pa.advance();:} {:TextFormatter.formatAndPrintText("condition","logExpr OPA_AND logExpr");:}
+            |   logExpr {:pa.add(Labels.CMP);pa.writeNegatedOperator();pa.advance();:} OPA_OR logExpr {:pa.add(Labels.CMP);pa.writeOperator();pa.writeNextPosition();pa.advance();:} {:TextFormatter.formatAndPrintText("condition","logExpr OPA_OR logExpr");:};
 
 logExpr     ::= expression logOp expression
             |   expression logOp function
@@ -175,7 +170,7 @@ factor      ::= ID:id {: TextFormatter.formatAndPrintText("factor","ID:"+id); pa
             |   PAR_ABRE expression PAR_CIER;
 
 /* While */
-while       ::= WHILE PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER {: TextFormatter.formatAndPrintText("while", "WHILE PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER "); :};
+while       ::= WHILE PAR_ABRE {:pa.add(Labels.ET); pa.stackPosition(); :} condition PAR_CIER LLAV_ABRE sentence LLAV_CIER {:pa.add(Labels.BI);pa.writeNextPosition();pa.writeStackIntoPosition();:} {: TextFormatter.formatAndPrintText("while", "WHILE PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER "); :};
 
 /* Declaration */
 decBlock    ::= DECVAR LLAV_ABRE declaration LLAV_CIER {: TextFormatter.formatAndPrintText("decBlock", "DECVAR LLAV_ABRE declaration LLAV_CIER"); :};

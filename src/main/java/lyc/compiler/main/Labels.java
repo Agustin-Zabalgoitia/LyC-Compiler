@@ -9,5 +9,6 @@ public class Labels {
     public static final String BEQ = "BEQ";
     public static final String BI = "BI";
     public static final String CMP = "CMP";
+    public static final String ET = "ET";
     public static final String NOT = "NOT";
 }

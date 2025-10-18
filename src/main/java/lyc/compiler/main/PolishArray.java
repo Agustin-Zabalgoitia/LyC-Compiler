@@ -67,11 +67,19 @@ public class PolishArray {
         data.add(operator);
     }
 
+    public void writeNegatedOperator(){
+        data.add(negateLogicalOperator(operatorStack.pop()));
+    }
+
     public void writePositionOnAllBlanks(){
         while(!stack.isEmpty())
         {
             writePosition();
         }
+    }
+
+    public void writeStackIntoPosition(){
+        data.add(""+stack.pop());
     }
 
     private String negateLogicalOperator(String operator){

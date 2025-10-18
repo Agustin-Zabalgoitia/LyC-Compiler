@@ -1,4 +1,4 @@
-if(a > b AND c == d)
+while(a>b)
 {
     pepe := consecuencia
 }

@@ -1,16 +1,14 @@
 LINEA | INSTRUCCIÓN
 -----------------------
-0     | a         
-1     | b         
-2     | CMP       
-3     | BLE       
-4     |           
-5     | c         
-6     | d         
-7     | CMP       
-8     | BNE       
-9     | 13        
-10    | consecuencia
-11    | pepe      
-12    | :=        
-13    |           
+0     | ET        
+1     | a         
+2     | b         
+3     | CMP       
+4     | BLE       
+5     | 11        
+6     | consecuencia
+7     | pepe      
+8     | :=        
+9     | BI        
+10    | 0         
+11    |           

@@ -1,7 +1,5 @@
 Nombre, TipoDato, Valor, Longitud
 a, , —, , 
 b, , —, , 
-c, , —, , 
-d, , —, , 
 pepe, , —, , 
 consecuencia, , —, , 
