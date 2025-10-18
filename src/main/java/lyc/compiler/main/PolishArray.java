@@ -10,6 +10,7 @@ public class PolishArray {
 
     private Stack<Integer> stack;
     private Stack<String> operatorStack;
+    private Stack<String> dataTypeStack;
 
     //Another Singleton cause why not?
     public static PolishArray getPolishArray() {
