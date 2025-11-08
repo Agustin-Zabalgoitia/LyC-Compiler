@@ -236,7 +236,7 @@ function ::= functionE {: System.out.println("Funtion equalExpressions() "); :}
 
 functionE ::= EQUAL_EXPR OPEN_BRACKET l_exp CLOSE_BRACKET {: System.out.println("Funcion equalExpressions"); :};
 
-l_exp ::= l_exp COMA expression {: System.out.println("Lista de Expresiones Multiples"); :}
-      |   expression {: System.out.println("Expresion Simple"); :};
+l_exp ::= l_exp COMA valid_expression {: System.out.println("Lista de Expresiones Multiples"); :}
+      |   valid_expression {: System.out.println("Expresion Simple"); :};
 
-functionZ ::= IS_ZERO OPEN_BRACKET expression CLOSE_BRACKET {: System.out.println("isZero(Expression)"); :};
+functionZ ::= IS_ZERO OPEN_BRACKET valid_expression CLOSE_BRACKET {: System.out.println("isZero(Expression)"); :};
