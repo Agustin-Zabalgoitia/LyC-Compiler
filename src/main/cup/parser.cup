@@ -1,196 +1,242 @@
 package lyc.compiler;
 
 import java_cup.runtime.*;
-import lyc.compiler.utils.TextFormatter;
-import lyc.compiler.main.PolishArray;
-import lyc.compiler.main.Labels;
+import lyc.compiler.main.Utility;
+import lyc.compiler.main.SymbolTable;
+import java.util.Stack;
 
 class Parser;
 
-action code {: PolishArray pa = PolishArray.getPolishArray(); :}
-//parser code {::}
+action code {:
+                Utility ut = Utility.getInstance();
+                SymbolTable st = SymbolTable.getSymbolTable();
+            :}
 
 // Terminals
-/* Identificador */
-terminal ID;
-
-/* Funciones Especiales */
-terminal EQUAL_EXPR;
-terminal IS_ZERO;
-
-/* Palabras Reservadas */
-terminal ELSE;
-terminal IF;
-terminal DECVAR;
-terminal WHILE;
-terminal ENTRADA;
-terminal SALIDA;
-
-/* Operadores */
-terminal ASIG;
-terminal OP_SUMA;
-terminal OP_RESTA;
-terminal OP_MULT;
-terminal OP_DIV;
-
-/* Operadores Lógicos */
-terminal OPA_AND;
-terminal OPA_OR;
-terminal OPA_NOT;
-terminal OPA_MAY;
-terminal OPA_MEN;
-terminal OPA_IGUAL;
-terminal OPA_MAIG;
-terminal OPA_MEIG;
-
-/* Constantes */
-terminal CTE_E;
-terminal CTE_F;
+terminal ASSIG;
+terminal PLUS;
+terminal SUB;
+terminal MULT;
+terminal DIV;
+terminal OPEN_BRACKET;
+terminal CLOSE_BRACKET;
+terminal INTEGER_CONSTANT;
+terminal IDENTIFIER;
+terminal LE, GE, G, L, EQ, NEQ;
+terminal INT, STRING, FLOAT;
 terminal CTE_S;
-
-/* Tipos de Dato */
-terminal INT;
-terminal FLOAT;
-terminal STRING;
-terminal BOOLEAN;
-
-/* Símbolos */
-terminal LLAV_ABRE;
-terminal LLAV_CIER;
-terminal PAR_ABRE;
-terminal PAR_CIER;
-terminal DOS_PTOS;
-terminal COMA;
+terminal CURLY_BRACKET_OPN, CURLY_BRACKET_CLSD;
+terminal SEMICOLON, COLON, COMA;
+terminal STATIC;
+terminal SQUARE_BRACKET_OPN, SQUARE_BRACKET_CLSD;
+terminal VOID, MAIN, PUBLIC, CLASS, INIT, IF, ELSE;
+terminal AND, OR, NOT;
+terminal WRITE, READ, WHILE;
+terminal FLOAT_CONSTANT;
+terminal NEGATIVE_CONSTANT;
+terminal IS_ZERO;
+terminal EQUAL_EXPR;
 
 // Non Terminals
-// We use lowercase, or camelCase if necessary, when defining non terminals
 non terminal sentence;
-non terminal operation;
-non terminal output;
-non terminal input;
-non terminal ifelse;
-non terminal condition;
-non terminal logExpr; //Logical Expression
-non terminal logOp; //Logical Operator
+non terminal assignment;
+non terminal valid_expression;
 non terminal expression;
 non terminal term;
 non terminal factor;
-non terminal assign;
-non terminal while;
-non terminal decBlock; //Declaration Block
-non terminal declaration;
-non terminal dataType;
-non terminal idList;
-non terminal beginning;
-non terminal function;
-non terminal espFunction;
-non terminal exprList; //Expression List
-non terminal isZero;
-non terminal equalExpressions;
-non terminal auxCond;
-non terminal auxSent;
-non terminal auxSentElse;
+non terminal program;
+non terminal algo;
+non terminal block_ini , block_pgrm, bloque_var;
+non terminal var_decl, var_decl_2;
+non terminal block_variables, tipo, variables, variable, asignacion, bloque_if, condicion, op_comp, bloque_while;
+non terminal if_decl, else_decl, write_sent, read_sent;
+non terminal sentencias_pgrm , sentencia_pgrm, sentencias_var, sentencia_var;
+non terminal functionZ , functionE, function, l_exp;
 
 // Start Symbol Definition
-start with beginning;
+start with program;
 
-// Grammar rules!
-beginning   ::= decBlock {:pa.add("");:}
-            |   decBlock sentence {:pa.add("");:}
-            |   sentence {:pa.add("");:};
+/*
+program ::= PUBLIC CLASS IDENTIFIER CURLY_BRACKET_OPN algo CURLY_BRACKET_CLSD {: System.out.println("Declaracion de Clase"); :};
 
-sentence    ::= operation sentence
-            |   operation;
+algo ::= PUBLIC STATIC VOID MAIN OPEN_BRACKET STRING SQUARE_BRACKET_OPN SQUARE_BRACKET_CLSD IDENTIFIER CLOSE_BRACKET CURLY_BRACKET_OPN blocks CURLY_BRACKET_CLSD
+         {: System.out.println("Declaracion de main"); :};
+*/
 
-operation   ::= output
-            |   input
-            |   assign
-            |   ifelse
-            |   while
-            |   function;
+program ::= block_ini block_pgrm {: System.out.println("Inicio de Programa -> bloque inicial + bloques"); :}
+        |   block_ini {: System.out.println("Inicio de Programa -> bloque inicial sin programa"); :};
 
-/* Output */
-output      ::= SALIDA PAR_ABRE CTE_S:str PAR_CIER {:pa.add(""+str);pa.add("WRITE"); TextFormatter.formatAndPrintText("output", "SALIDA PAR_ABRE CTE_S:"+str+" PAR_CIER"); :}
-            |   SALIDA PAR_ABRE ID:id PAR_CIER {:pa.add(""+id);pa.add("WRITE"); TextFormatter.formatAndPrintText("output", "SALIDA PAR_ABRE ID:"+id+" PAR_CIER"); :}
-            ;
+block_ini ::= bloque_var {: System.out.println("Bloque inicio -> Bloque variables"); :};
 
-/* Input */
-input       ::= ENTRADA PAR_ABRE ID:id PAR_CIER {:pa.add(""+id);pa.add("READ"); TextFormatter.formatAndPrintText("input","ENTRADA PAR_ABRE ID:"+id+" PAR_CIER"); :};
+block_pgrm ::= sentencias_pgrm {: System.out.println("Bloque de Programa -> Sentencia de Programa"); :};
 
-/* Assign */
-assign      ::= ID:id ASIG expression {: TextFormatter.formatAndPrintText("assign","ID:"+id+" ASIG expression"); pa.add(""+id); pa.add(":="); :};
+sentencias_pgrm ::= sentencias_pgrm sentencia_pgrm {: System.out.println("Sentencias Multiples de Programa"); :}
+                |   sentencia_pgrm {: System.out.println("Sentencia Simple de Programa"); :};
 
-/* Ifelse */
-ifelse      ::= IF PAR_ABRE auxCond PAR_CIER LLAV_ABRE auxSent LLAV_CIER {:pa.writePositionOnAllBlanks();:} {:TextFormatter.formatAndPrintText("ifelse","IF PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER");:}
-            |   IF PAR_ABRE auxCond PAR_CIER LLAV_ABRE auxSent LLAV_CIER ELSE LLAV_ABRE sentence LLAV_CIER {:pa.writePositionOnAllBlanks();:} {:TextFormatter.formatAndPrintText("ifelse","IF PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER ELSE LLAV_ABRE sentence LLAV_CIER");:};
+sentencia_pgrm ::= asignacion | bloque_if | read_sent | write_sent | bloque_while {: System.out.println("Bloque/Sentencia Singular de Codigo"); :};
 
-auxCond     ::= condition;
+bloque_var ::= INIT CURLY_BRACKET_OPN sentencias_var CURLY_BRACKET_CLSD {: System.out.println("Bloque de Declaracion de Variables"); :};
 
-auxSent     ::= sentence;
+sentencias_var ::= sentencias_var sentencia_var {: System.out.println("Sentencias de Declaracion Multiples de Variables"); :}
+                |  sentencia_var {: System.out.println("Sentencia de Declaracion Simple de Variable"); :};
 
-auxSentElse ::= sentence {:
-                            pa.add(Labels.BI);
-                            pa.writeNextPosition();
-                            pa.writePositionOnAllBlanks();
-                         :};
+sentencia_var ::= variables COLON tipo {:
+                                            System.out.println("Sentencia de Variable");
+                                            String tipoDato = ut.desapilarType();
+                                            Stack<String> stack = ut.getIdStack();
 
-condition   ::= logExpr {:pa.add(Labels.CMP);pa.writeOperator();pa.advance();:}
-            |   OPA_NOT {:pa.stackOperator(Labels.NOT);:} logExpr {:pa.add(Labels.CMP);pa.writeOperator();pa.advance();:} {:TextFormatter.formatAndPrintText("condition","OPA_NOT logExpr");:}
-            |   logExpr {:pa.add(Labels.CMP);pa.writeOperator();pa.advance();:} OPA_AND logExpr {:pa.add(Labels.CMP);pa.writeOperator();pa.advance();:} {:TextFormatter.formatAndPrintText("condition","logExpr OPA_AND logExpr");:}
-            |   logExpr {:pa.add(Labels.CMP);pa.writeNegatedOperator();pa.advance();:} OPA_OR logExpr {:pa.add(Labels.CMP);pa.writeOperator();pa.writeNextPosition();pa.advance();:} {:TextFormatter.formatAndPrintText("condition","logExpr OPA_OR logExpr");:};
+                                            while(!stack.isEmpty()) {
+                                                st.addType(stack.pop(), tipoDato);
+                                            }
+                                       :};
 
-logExpr     ::= expression logOp expression
-            |   expression logOp function
-            |   function logOp expression
-            |   function logOp function
-            |   function
-            |   expression;
+variables ::= variables COMA variable {: System.out.println("Multiple Declaracion de Variables"); :}
+            | variable {: System.out.println("Declaracion de Variable Simple"); :};
 
-logOp       ::= OPA_MAY {:pa.stackOperator(Labels.BLE);:} {:TextFormatter.formatAndPrintText("logOp","OPA_MAY");:}
-            |   OPA_MEN {:pa.stackOperator(Labels.BGE);:} {:TextFormatter.formatAndPrintText("logOp","OPA_MEN");:}
-            |   OPA_MAIG {:pa.stackOperator(Labels.BLT);:} {:TextFormatter.formatAndPrintText("logOp","OPA_MAIG");:}
-            |   OPA_MEIG {:pa.stackOperator(Labels.BGT);:} {:TextFormatter.formatAndPrintText("logOp","OPA_MEIG");:}
-            |   OPA_IGUAL {:pa.stackOperator(Labels.BNE);:} {:TextFormatter.formatAndPrintText("logOp","OPA_IGUAL");:};
+variable ::= IDENTIFIER:id {:
+                                // Aca antes de apilar el "id" para luego asignarle su tipo, tengo que revisar que no este previamente en la tabla de simbolos
+                                st.checkDuplicatedVariable("" + id);
+                                System.out.println("Nombre de Variable");
+                                ut.apilarId("" + id);
+                           :};
 
-/* Expression */
-expression  ::= expression OP_SUMA term {: TextFormatter.formatAndPrintText("expression","expression OP_SUMA term"); pa.add("+"); :}
-            |   expression OP_RESTA term {: TextFormatter.formatAndPrintText("expression","expression OP_RESTA term"); pa.add("-"); :}
-            |   term;
+tipo ::= INT {:
+                System.out.println("Tipo de Variable/s 'Int'");
+                ut.apilarType("Int");
+             :}
+       | FLOAT {:
+                    System.out.println("Tipo de Variable/s 'Float'");
+                    ut.apilarType("Float");
+               :}
+       | STRING {:
+                    System.out.println("Tipo de Variable/s 'String'");
+                    ut.apilarType("String");
+                :};
 
-term        ::= term OP_MULT factor {: TextFormatter.formatAndPrintText("term","term OP_MULT factor"); pa.add("*"); :}
-            |   term OP_DIV factor {: TextFormatter.formatAndPrintText("term","term OP_DIV factor"); pa.add("/"); :}
-            |   factor;
+asignacion ::= sentence {: System.out.println("Asignacion Numerica (Sentencia)"); :}
+             | IDENTIFIER:id ASSIG CTE_S {: System.out.println("Asignacion de String");
+                                            st.checkUndeclaredVariable("" + id);
+                                            st.checkStringAssig("" + id);
+                                         :};
 
-factor      ::= ID:id {: TextFormatter.formatAndPrintText("factor","ID:"+id); pa.add(""+id); :}
-            |   CTE_E:num  {: TextFormatter.formatAndPrintText("factor","CTE_E:"+num); pa.add(""+num); :}
-            |   OP_RESTA CTE_E:num {: TextFormatter.formatAndPrintText("factor","OP_RESTA CTE_E:"+num); pa.add("-"+num); :}
-            |   CTE_F:fnum {: TextFormatter.formatAndPrintText("factor","CTE_F:"+fnum); pa.add(""+fnum); :}
-            |   OP_RESTA CTE_F:fnum {: TextFormatter.formatAndPrintText("factor","OP_RESTA CTE_F:"+fnum); pa.add("-"+fnum); :}
-            |   CTE_S:str {: TextFormatter.formatAndPrintText("factor","CTE_S:"+str); pa.add(""+str); :}
-            |   PAR_ABRE expression PAR_CIER;
+bloque_if ::= if_decl {: System.out.println("Bloque If sin Else"); :}
+            | if_decl else_decl {: System.out.println("Bloque If con Else"); :};
 
-/* While */
-while       ::= WHILE PAR_ABRE {:pa.add(Labels.ET); pa.stackPosition(); :} condition PAR_CIER LLAV_ABRE sentence LLAV_CIER {:pa.add(Labels.BI);pa.writeNextPosition();pa.writeStackIntoPosition();:} {: TextFormatter.formatAndPrintText("while", "WHILE PAR_ABRE condition PAR_CIER LLAV_ABRE sentence LLAV_CIER "); :};
+if_decl ::= IF OPEN_BRACKET condicion CLOSE_BRACKET CURLY_BRACKET_OPN sentencias_pgrm CURLY_BRACKET_CLSD {: System.out.println("Declaracion de Bloque IF"); :};
 
-/* Declaration */
-decBlock    ::= DECVAR LLAV_ABRE declaration LLAV_CIER {: TextFormatter.formatAndPrintText("decBlock", "DECVAR LLAV_ABRE declaration LLAV_CIER"); :};
+else_decl ::= ELSE CURLY_BRACKET_OPN sentencias_pgrm CURLY_BRACKET_CLSD {: System.out.println("Bloque Else de If"); :};
 
-declaration ::= idList DOS_PTOS dataType declaration {: TextFormatter.formatAndPrintText("declaration","idList DOS_PTOS dataType declaration"); :}
-            |   idList DOS_PTOS dataType {: TextFormatter.formatAndPrintText("declaration","idList DOS_PTOS dataType"); :};
+condicion ::= expression op_comp expression {: System.out.println("Condicion de IF simple");
+                                               ut.checkConditionType();
+                                            :}
+            | NOT expression op_comp expression {: System.out.println("Condicion de IF 'NOT' simple");
+                                                   ut.checkConditionType();
+                                                :}
 
-dataType    ::= INT {: TextFormatter.formatAndPrintText("dataType", "INT"); :}
-            |   FLOAT {: TextFormatter.formatAndPrintText("dataType","FLOAT"); :}
-            |   STRING {: TextFormatter.formatAndPrintText("dataType","STRING"); :}
-            |   BOOLEAN {: TextFormatter.formatAndPrintText("dataType","BOOLEAN"); :};
+            | expression op_comp expression AND expression op_comp expression {: System.out.println("Condicion de IF multiple 'AND'");
+                                                                                 ut.checkConditionType();
+                                                                              :}
+            | NOT expression op_comp expression AND expression op_comp expression {: System.out.println("Condicion de IF multiple 'AND' y 'NOT' al inicio");
+                                                                                     ut.checkConditionType();
+                                                                                  :}
+            | expression op_comp expression AND NOT expression op_comp expression {: System.out.println("Condicion de IF multiple 'AND' y 'NOT' al final");
+                                                                                     ut.checkConditionType();
+                                                                                  :}
+            | NOT expression op_comp expression AND NOT expression op_comp expression {: System.out.println("Condicion de IF multiple 'AND' y 'NOT' en ambas condiciones");
+                                                                                         ut.checkConditionType();
+                                                                                      :}
 
-idList      ::= ID:id COMA idList {: TextFormatter.formatAndPrintText("idList", "ID:"+id+" COMA idList"); :}
-            |   ID:id {: TextFormatter.formatAndPrintText("idList", "ID:"+id); :};
+            | expression op_comp expression OR expression op_comp expression {: System.out.println("Condicion de IF multiple 'OR'");
+                                                                                ut.checkConditionType();
+                                                                             :}
+            | NOT expression op_comp expression OR expression op_comp expression {: System.out.println("Condicion de IF multiple 'OR' y 'NOT' al inicio");
+                                                                                    ut.checkConditionType();
+                                                                                 :}
+            | expression op_comp expression OR NOT expression op_comp expression {: System.out.println("Condicion de IF multiple 'OR' y 'NOT' al final");
+                                                                                    ut.checkConditionType();
+                                                                                 :}
+            | NOT expression op_comp expression OR NOT expression op_comp expression {: System.out.println("Condicion de IF multiple 'OR' y 'NOT' en ambas condiciones");
+                                                                                        ut.checkConditionType();
+                                                                                     :}
 
-/* Function */
-function    ::= IS_ZERO PAR_ABRE expression PAR_CIER {:pa.add(Labels.CMP);pa.add(Labels.BNE);pa.advance();pa.add("TRUE");pa.add(Labels.BI);pa.advance();pa.add("FALSE");pa.writePositionOnAllBlanks();:} {: TextFormatter.formatAndPrintText("function", "IS_ZERO PAR_ABRE expression PAR_CIER"); :}
-            |   EQUAL_EXPR PAR_ABRE exprList PAR_CIER {: TextFormatter.formatAndPrintText("function", "EQUAL_EXPR PAR_ABRE exprList PAR_CIER"); :};
+            | function {: System.out.println("Funcion como comparacion"); :};
 
-espFunction ::= EQUAL_EXPR | IS_ZERO;
+op_comp ::= GE {: System.out.println("Operador >="); :}
+            | LE {: System.out.println("Operador <="); :}
+            | G {: System.out.println("Operador >"); :}
+            | L {: System.out.println("Operador <"); :}
+            | EQ {: System.out.println("Operador =="); :}
+            | NEQ {: System.out.println("Operador !="); :};
 
-exprList    ::= expression COMA exprList {: TextFormatter.formatAndPrintText("exprList", "expression COMA exprList"); :}
-            |   expression;
+write_sent ::= WRITE OPEN_BRACKET CTE_S CLOSE_BRACKET {: System.out.println("Write con STRING literal"); :}
+             | WRITE OPEN_BRACKET IDENTIFIER:id {: st.checkUndeclaredVariable("" + id); :} CLOSE_BRACKET {: System.out.println("Write con variable"); :};
+
+read_sent ::= READ OPEN_BRACKET IDENTIFIER:id {: st.checkUndeclaredVariable("" + id); :} CLOSE_BRACKET {: System.out.println("Lectura de una variable"); :};
+
+bloque_while ::= WHILE OPEN_BRACKET condicion CLOSE_BRACKET CURLY_BRACKET_OPN sentencias_pgrm CURLY_BRACKET_CLSD {: System.out.println("Bloque While"); :};
+
+sentence ::= assignment {: System.out.println("End"); :};
+assignment ::= IDENTIFIER:id ASSIG expression {:
+                                                 System.out.println("Assignment");
+                                                 st.checkUndeclaredVariable("" + id);
+
+                                                 if(ut.notEmptyTypeStacks()) {
+                                                    throw new RuntimeException("La expresion arimetica contiene operandos de diferente tipo.");
+                                                 }
+
+                                                 ut.checkExpressionAssig(st.getDataType("" + id), "" + id);
+
+                                                 ut.vaciarIntType();
+                                                 ut.vaciarFloatType();
+
+                                              :};
+
+valid_expression ::= expression {:
+                                    if(ut.notEmptyTypeStacks()) {
+                                        throw new RuntimeException("La expresion arimetica contiene operandos de diferente tipo.");
+                                    }
+
+                                    ut.vaciarIntType();
+                                    ut.vaciarFloatType();
+
+                                :};
+
+expression ::= expression PLUS term {: System.out.println("+"); :};
+expression ::= expression SUB term {: System.out.println("-"); :};
+expression ::= term {: System.out.println("Expression = Term"); :};
+term ::= term MULT factor {: System.out.println("*"); :};
+term ::= term DIV factor {: System.out.println("/"); :};
+term ::= factor {: System.out.println("Term = factor"); :};
+
+factor ::= IDENTIFIER:id  {: System.out.println("Id: " + id);
+
+                             st.checkUndeclaredVariable("" + id);
+
+                             ut.pushDataTypeId(st.getDataType("" + id), "" + id);
+
+                          :};
+
+factor ::= INTEGER_CONSTANT:constant {: System.out.println("Constant: " + constant );
+
+                                        ut.apilarIntType("int");
+
+                                     :};
+
+factor ::= FLOAT_CONSTANT:constant {: System.out.println("Constant: " + constant);
+
+                                      ut.apilarFloatType("float");
+
+                                   :};
+
+factor ::= SUB factor {: System.out.println("Regla de mi amigazo <3"); :}; // No olvidarse de cambiar el nombre
+factor ::= OPEN_BRACKET expression CLOSE_BRACKET {: System.out.println("Factor = (Expression)"); :};
+
+function ::= functionE {: System.out.println("Funtion equalExpressions() "); :}
+           | functionZ {: System.out.println("Funcion isZero() "); :};
+
+functionE ::= EQUAL_EXPR OPEN_BRACKET l_exp CLOSE_BRACKET {: System.out.println("Funcion equalExpressions"); :};
+
+l_exp ::= l_exp COMA expression {: System.out.println("Lista de Expresiones Multiples"); :}
+      |   expression {: System.out.println("Expresion Simple"); :};
+
+functionZ ::= IS_ZERO OPEN_BRACKET expression CLOSE_BRACKET {: System.out.println("isZero(Expression)"); :};
