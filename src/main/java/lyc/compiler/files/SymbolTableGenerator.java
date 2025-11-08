@@ -1,20 +1,52 @@
 package lyc.compiler.files;
 
+import java_cup.runtime.Symbol;
+import lyc.compiler.main.SymbolTable;
+
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
-import lyc.compiler.SymbolTable;
-
-public class SymbolTableGenerator implements FileGenerator {
+public class SymbolTableGenerator implements FileGenerator{
 
     @Override
     public void generate(FileWriter fileWriter) throws IOException {
+
+        int widthName = 25;
+        int widthType = 25;
+        int widthValue = 25;
+        int widthLength = 25;
+
         SymbolTable st = SymbolTable.getSymbolTable();
-        fileWriter.write("Nombre, TipoDato, Valor, Longitud\n");
-        for (String[] row : st.getTable()) {
-            for (int i = 0; i < row.length; i++)
-                fileWriter.write(String.format("%s, ", row[i]));
-            fileWriter.write("\n");
+        List<String[]> data = st.getData();
+
+        fileWriter.write(buildLine(widthName, widthType, widthValue, widthLength) + "\n");
+
+        fileWriter.write(String.format("| %-"+widthName+"s | %-"+widthType+"s | %-"+widthValue+"s | %-"+widthLength+"s |%n",
+                "NOMBRE", "TIPODATO", "VALOR", "LONGITUD"));
+
+        fileWriter.write(buildLine(widthName, widthType, widthValue, widthLength) + "\n");
+
+        for (String[] row : data) {
+            fileWriter.write(String.format("| %-"+widthName+"s | %-"+widthType+"s | %-"+widthValue+"s | %-"+widthLength+"s |%n",
+                    row[st.COL_NAME], row[st.COL_DATA_TYPE], row[st.COL_VALUE], row[st.COL_LENGTH]));
         }
+
+        fileWriter.write(buildLine(widthName, widthType, widthValue, widthLength) + "\n");
+
+        fileWriter.flush();
     }
+
+    private String buildLine(int... widths) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("+");
+        for (int w : widths) {
+            for (int i = 0; i < w + 2; i++) {
+                sb.append("-");
+            }
+            sb.append("+");
+        }
+        return sb.toString();
+    }
+
 }

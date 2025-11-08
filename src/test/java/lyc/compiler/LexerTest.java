@@ -17,15 +17,16 @@ import static com.google.common.truth.Truth.assertThat;
 import static lyc.compiler.constants.Constants.MAX_LENGTH;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+
 @Disabled
 public class LexerTest {
 
-  private Lexer lexer;
+  private lyc.compiler.Lexer lexer;
 
 
   @Test
   public void comment() throws Exception{
-    scan("#+This is a comment+#");
+    scan("/*This is a comment*/");
     assertThat(nextToken()).isEqualTo(ParserSym.EOF);
   }
 
@@ -38,7 +39,6 @@ public class LexerTest {
   }
 
   @Test
-  @Disabled
   public void invalidIdLength() {
     assertThrows(InvalidLengthException.class, () -> {
       scan(getRandomString());
@@ -55,7 +55,6 @@ public class LexerTest {
   }
 
   @Test
-  @Disabled
   public void invalidNegativeIntegerConstantValue() {
     assertThrows(InvalidIntegerException.class, () -> {
       scan("%d".formatted(-9223372036854775807L));
@@ -64,6 +63,22 @@ public class LexerTest {
   }
 
 
+  @Test
+  public void assignmentWithExpressions() throws Exception {
+    scan("c=d*(e-21)/4");
+    assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
+    assertThat(nextToken()).isEqualTo(ParserSym.ASSIG);
+    assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
+    assertThat(nextToken()).isEqualTo(ParserSym.MULT);
+    assertThat(nextToken()).isEqualTo(ParserSym.OPEN_BRACKET);
+    assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
+    assertThat(nextToken()).isEqualTo(ParserSym.SUB);
+    assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
+    assertThat(nextToken()).isEqualTo(ParserSym.CLOSE_BRACKET);
+    assertThat(nextToken()).isEqualTo(ParserSym.DIV);
+    assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
+    assertThat(nextToken()).isEqualTo(ParserSym.EOF);
+  }
 
   @Test
   public void unknownCharacter() {
@@ -72,23 +87,6 @@ public class LexerTest {
       nextToken();
     });
   }
-
-    @Test
-    public void assignmentWithExpressions() throws Exception {
-        scan("c:=d*(e-21)/4");
-        assertThat(nextToken()).isEqualTo(ParserSym.ID);
-        assertThat(nextToken()).isEqualTo(ParserSym.ASIG);
-        assertThat(nextToken()).isEqualTo(ParserSym.ID);
-        assertThat(nextToken()).isEqualTo(ParserSym.OP_MULT);
-        assertThat(nextToken()).isEqualTo(ParserSym.PAR_ABRE);
-        assertThat(nextToken()).isEqualTo(ParserSym.ID);
-        assertThat(nextToken()).isEqualTo(ParserSym.OP_RESTA);
-        assertThat(nextToken()).isEqualTo(ParserSym.CTE_E);
-        assertThat(nextToken()).isEqualTo(ParserSym.PAR_CIER);
-        assertThat(nextToken()).isEqualTo(ParserSym.OP_DIV);
-        assertThat(nextToken()).isEqualTo(ParserSym.CTE_E);
-        assertThat(nextToken()).isEqualTo(ParserSym.EOF);
-    }
 
   @AfterEach
   public void resetLexer() {

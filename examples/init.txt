@@ -1,0 +1,23 @@
+init {
+
+    a : Int
+    b : String
+    c : Float
+
+}
+
+a = 3 + 1
+
+c = c + 1.1
+
+b = "Holi"
+
+if(NOT a > 73 AND 3 + 2 > 2 * 3) {
+    write("Esto no tiene que explotar")
+}
+
+while(c > 2.1) {
+    write("Hola")
+}
+
+
