@@ -1,7 +1,8 @@
 package lyc.compiler;
 
 import java_cup.runtime.Symbol;
-import lyc.compiler.Parser;import lyc.compiler.ParserSym;
+import lyc.compiler.Parser;
+import lyc.compiler.ParserSym;
 import lyc.compiler.main.SymbolTable;
 import lyc.compiler.model.*;
 import java.math.BigDecimal;

@@ -23,6 +23,8 @@ public class Utility {
     //TODO: En desarrollo: Implementacion de pila para asegurar compatibilidad de tipos en expresiones aritmeticas
     private Stack<String> intTypeStack = new Stack<>();
     private Stack<String> floatTypeStack = new Stack<>();
+    private Stack<String> paStack = new Stack<>();
+    private Stack<String> auxStack = new Stack<>();
 
     // apilar
     public void apilarId(String id) {
@@ -31,10 +33,14 @@ public class Utility {
     public void apilarType(String type) { typeStack.push(type); }
     public void apilarIntType(String type) { intTypeStack.push(type); }
     public void apilarFloatType(String type) { floatTypeStack.push(type); }
+    public void apilarPa(String pa) { paStack.push(pa); }
+    public void apilarAux(String aux) { auxStack.push(aux); }
 
     // desapilar
     public String desapilarId() { return idStack.pop(); }
     public String desapilarType() { return typeStack.pop(); }
+    public String desapilarPa() { return paStack.pop(); }
+    public String desapilarAux() { return auxStack.pop(); }
 
     // vaciar
     public void vaciarIntType() { intTypeStack = new Stack<>(); }
@@ -44,6 +50,8 @@ public class Utility {
     public Stack<String> getIdStack () { return idStack; }
     public Stack<String> getIntTypeStack () { return intTypeStack; }
     public Stack<String> getFloatTypeStack() { return floatTypeStack; }
+    public Stack<String> getPaStack () { return paStack; }
+    public Stack<String> getAuxStack () { return auxStack; }
 
     public boolean notEmptyTypeStacks() {
 

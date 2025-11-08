@@ -2,15 +2,13 @@
 | NOMBRE                    | TIPODATO                  | VALOR                     | LONGITUD                  |
 +---------------------------+---------------------------+---------------------------+---------------------------+
 | a                         | Int                       | -                         | -                         |
-| b                         | String                    | -                         | -                         |
-| c                         | Float                     | -                         | -                         |
-| _3                        | CTE_INTEGER               | 3                         | -                         |
+| b                         | Int                       | -                         | -                         |
+| c                         | Int                       | -                         | -                         |
+| d                         | Int                       | -                         | -                         |
+| e                         | String                    | -                         | -                         |
+| f                         | String                    | -                         | -                         |
+| g                         | String                    | -                         | -                         |
+| h                         | Float                     | -                         | -                         |
 | _1                        | CTE_INTEGER               | 1                         | -                         |
-| _1.1                      | CTE_FLOAT                 | 1.1                       | -                         |
-| _"Holi"                   | CTE_STRING                | "Holi"                    | 6                         |
-| _73                       | CTE_INTEGER               | 73                        | -                         |
-| _2                        | CTE_INTEGER               | 2                         | -                         |
-| _"Esto no tiene que explotar" | CTE_STRING                | "Esto no tiene que explotar" | 28                        |
-| _2.1                      | CTE_FLOAT                 | 2.1                       | -                         |
-| _"Hola"                   | CTE_STRING                | "Hola"                    | 6                         |
+| _"Pepe po"                | CTE_STRING                | "Pepe po"                 | 9                         |
 +---------------------------+---------------------------+---------------------------+---------------------------+

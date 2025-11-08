@@ -3,6 +3,7 @@ package lyc.compiler;
 import java_cup.runtime.*;
 import lyc.compiler.main.Utility;
 import lyc.compiler.main.SymbolTable;
+import lyc.compiler.main.PolishArray;
 import java.util.Stack;
 
 class Parser;
@@ -10,6 +11,7 @@ class Parser;
 action code {:
                 Utility ut = Utility.getInstance();
                 SymbolTable st = SymbolTable.getSymbolTable();
+                PolishArray pa = PolishArray.getInstance();
             :}
 
 // Terminals
@@ -63,7 +65,9 @@ algo ::= PUBLIC STATIC VOID MAIN OPEN_BRACKET STRING SQUARE_BRACKET_OPN SQUARE_B
          {: System.out.println("Declaracion de main"); :};
 */
 
-program ::= block_ini block_pgrm {: System.out.println("Inicio de Programa -> bloque inicial + bloques"); :}
+program ::= block_ini block_pgrm {: System.out.println("Inicio de Programa -> bloque inicial + bloques");
+                                    pa.exportToFile();
+                                 :}
         |   block_ini {: System.out.println("Inicio de Programa -> bloque inicial sin programa"); :};
 
 block_ini ::= bloque_var {: System.out.println("Bloque inicio -> Bloque variables"); :};
@@ -84,9 +88,17 @@ sentencia_var ::= variables COLON tipo {:
                                             System.out.println("Sentencia de Variable");
                                             String tipoDato = ut.desapilarType();
                                             Stack<String> stack = ut.getIdStack();
+                                            Stack<String> auxStack = ut.getAuxStack();
+                                            String type = ut.desapilarAux();
 
                                             while(!stack.isEmpty()) {
                                                 st.addType(stack.pop(), tipoDato);
+                                            }
+
+                                            while(!auxStack.isEmpty()) {
+                                                pa.insertar(type);
+                                                pa.insertar(auxStack.pop());
+                                                pa.insertar(":");
                                             }
                                        :};
 
@@ -98,25 +110,34 @@ variable ::= IDENTIFIER:id {:
                                 st.checkDuplicatedVariable("" + id);
                                 System.out.println("Nombre de Variable");
                                 ut.apilarId("" + id);
+                                ut.apilarAux("" + id);
                            :};
 
 tipo ::= INT {:
                 System.out.println("Tipo de Variable/s 'Int'");
                 ut.apilarType("Int");
+                ut.apilarAux("Int");
              :}
        | FLOAT {:
                     System.out.println("Tipo de Variable/s 'Float'");
                     ut.apilarType("Float");
+                    ut.apilarAux("Float");
                :}
        | STRING {:
                     System.out.println("Tipo de Variable/s 'String'");
                     ut.apilarType("String");
+                    ut.apilarAux("String");
                 :};
 
 asignacion ::= sentence {: System.out.println("Asignacion Numerica (Sentencia)"); :}
-             | IDENTIFIER:id ASSIG CTE_S {: System.out.println("Asignacion de String");
+             | IDENTIFIER:id ASSIG CTE_S:string {: System.out.println("Asignacion de String");
                                             st.checkUndeclaredVariable("" + id);
                                             st.checkStringAssig("" + id);
+
+                                            pa.insertar("" + string);
+                                            pa.insertar("" + id);
+                                            pa.insertar("=");
+
                                          :};
 
 bloque_if ::= if_decl {: System.out.println("Bloque If sin Else"); :}
@@ -189,6 +210,9 @@ assignment ::= IDENTIFIER:id ASSIG expression {:
                                                  ut.vaciarIntType();
                                                  ut.vaciarFloatType();
 
+                                                 pa.insertar("" + id);
+                                                 pa.insertar("=");
+
                                               :};
 
 valid_expression ::= expression {:
@@ -201,34 +225,44 @@ valid_expression ::= expression {:
 
                                 :};
 
-expression ::= expression PLUS term {: System.out.println("+"); :};
-expression ::= expression SUB term {: System.out.println("-"); :};
+expression ::= expression PLUS term {: System.out.println("+");
+                                       pa.insertar("+");
+                                    :};
+expression ::= expression SUB term {: System.out.println("-");
+                                      pa.insertar("-");
+                                   :};
 expression ::= term {: System.out.println("Expression = Term"); :};
-term ::= term MULT factor {: System.out.println("*"); :};
-term ::= term DIV factor {: System.out.println("/"); :};
+term ::= term MULT factor {: System.out.println("*");
+                             pa.insertar("*");
+                          :};
+term ::= term DIV factor {: System.out.println("/");
+                            pa.insertar("/");
+                         :};
 term ::= factor {: System.out.println("Term = factor"); :};
 
 factor ::= IDENTIFIER:id  {: System.out.println("Id: " + id);
 
                              st.checkUndeclaredVariable("" + id);
-
                              ut.pushDataTypeId(st.getDataType("" + id), "" + id);
+                             pa.insertar("" + id);
 
                           :};
 
 factor ::= INTEGER_CONSTANT:constant {: System.out.println("Constant: " + constant );
 
                                         ut.apilarIntType("int");
-
+                                        pa.insertar("" + constant);
                                      :};
 
 factor ::= FLOAT_CONSTANT:constant {: System.out.println("Constant: " + constant);
 
                                       ut.apilarFloatType("float");
-
+                                      pa.insertar("" + constant);
                                    :};
 
-factor ::= SUB factor {: System.out.println("Regla de mi amigazo <3"); :}; // No olvidarse de cambiar el nombre
+factor ::= SUB factor {: System.out.println("Regla de mi amigazo <3");
+                      :}; // TODO: No olvidarse de cambiar el nombre | Revisar accion semantica
+
 factor ::= OPEN_BRACKET expression CLOSE_BRACKET {: System.out.println("Factor = (Expression)"); :};
 
 function ::= functionE {: System.out.println("Funtion equalExpressions() "); :}
