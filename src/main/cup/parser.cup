@@ -3,6 +3,7 @@ package lyc.compiler;
 import java_cup.runtime.*;
 import lyc.compiler.main.Utility;
 import lyc.compiler.main.SymbolTable;
+import lyc.compiler.main.PolishArray;
 import java.util.Stack;
 
 class Parser;
@@ -10,6 +11,7 @@ class Parser;
 action code {:
                 Utility ut = Utility.getInstance();
                 SymbolTable st = SymbolTable.getSymbolTable();
+                PolishArray pa = PolishArray.getInstance();
             :}
 
 // Terminals
@@ -49,9 +51,11 @@ non terminal algo;
 non terminal block_ini , block_pgrm, bloque_var;
 non terminal var_decl, var_decl_2;
 non terminal block_variables, tipo, variables, variable, asignacion, bloque_if, condicion, op_comp, bloque_while;
-non terminal if_decl, else_decl, write_sent, read_sent;
+non terminal if_decl, if_else_decl, write_sent, read_sent;
 non terminal sentencias_pgrm , sentencia_pgrm, sentencias_var, sentencia_var;
 non terminal functionZ , functionE, function, l_exp;
+non terminal condicion_izq_or, condicion_izq_and, condicion_der_or, condicion_der_and;
+non terminal condicion_izq_or_neg , condicion_izq_and_neg, condicion_der_or_neg , condicion_der_and_neg;
 
 // Start Symbol Definition
 start with program;
@@ -63,7 +67,10 @@ algo ::= PUBLIC STATIC VOID MAIN OPEN_BRACKET STRING SQUARE_BRACKET_OPN SQUARE_B
          {: System.out.println("Declaracion de main"); :};
 */
 
-program ::= block_ini block_pgrm {: System.out.println("Inicio de Programa -> bloque inicial + bloques"); :}
+program ::= block_ini block_pgrm {: System.out.println("Inicio de Programa -> bloque inicial + bloques");
+                                    pa.exportToFile();
+                                    pa.exportToAssemblerFile();
+                                 :}
         |   block_ini {: System.out.println("Inicio de Programa -> bloque inicial sin programa"); :};
 
 block_ini ::= bloque_var {: System.out.println("Bloque inicio -> Bloque variables"); :};
@@ -84,10 +91,18 @@ sentencia_var ::= variables COLON tipo {:
                                             System.out.println("Sentencia de Variable");
                                             String tipoDato = ut.desapilarType();
                                             Stack<String> stack = ut.getIdStack();
+                                            Stack<String> auxStack = ut.getAuxStack();
+                                            String type = ut.desapilarAux();
 
                                             while(!stack.isEmpty()) {
                                                 st.addType(stack.pop(), tipoDato);
                                             }
+                                            /*
+                                            while(!auxStack.isEmpty()) {
+                                                pa.insertar(type);
+                                                pa.insertar(auxStack.pop());
+                                                pa.insertar(":");
+                                            } */
                                        :};
 
 variables ::= variables COMA variable {: System.out.println("Multiple Declaracion de Variables"); :}
@@ -98,82 +113,148 @@ variable ::= IDENTIFIER:id {:
                                 st.checkDuplicatedVariable("" + id);
                                 System.out.println("Nombre de Variable");
                                 ut.apilarId("" + id);
+                                ut.apilarAux("" + id);
                            :};
 
 tipo ::= INT {:
                 System.out.println("Tipo de Variable/s 'Int'");
                 ut.apilarType("Int");
+                ut.apilarAux("Int");
              :}
        | FLOAT {:
                     System.out.println("Tipo de Variable/s 'Float'");
                     ut.apilarType("Float");
+                    ut.apilarAux("Float");
                :}
        | STRING {:
                     System.out.println("Tipo de Variable/s 'String'");
                     ut.apilarType("String");
+                    ut.apilarAux("String");
                 :};
 
 asignacion ::= sentence {: System.out.println("Asignacion Numerica (Sentencia)"); :}
-             | IDENTIFIER:id ASSIG CTE_S {: System.out.println("Asignacion de String");
-                                            st.checkUndeclaredVariable("" + id);
-                                            st.checkStringAssig("" + id);
-                                         :};
+             | IDENTIFIER:id ASSIG CTE_S:string {:
+                                                    System.out.println("Asignacion de String");
+                                                    st.checkUndeclaredVariable("" + id);
+                                                    st.checkStringAssig("" + id);
+
+                                                    pa.insertar("" + string);
+                                                    pa.insertar("" + id);
+                                                    pa.insertar("=");
+                                                :};
 
 bloque_if ::= if_decl {: System.out.println("Bloque If sin Else"); :}
-            | if_decl else_decl {: System.out.println("Bloque If con Else"); :};
+            | if_else_decl {: System.out.println("Bloque If con Else"); :};
 
-if_decl ::= IF OPEN_BRACKET condicion CLOSE_BRACKET CURLY_BRACKET_OPN sentencias_pgrm CURLY_BRACKET_CLSD {: System.out.println("Declaracion de Bloque IF"); :};
+if_decl ::= IF OPEN_BRACKET condicion CLOSE_BRACKET CURLY_BRACKET_OPN sentencias_pgrm CURLY_BRACKET_CLSD {:
+                                                                                                            System.out.println("Declaracion de Bloque IF");
 
-else_decl ::= ELSE CURLY_BRACKET_OPN sentencias_pgrm CURLY_BRACKET_CLSD {: System.out.println("Bloque Else de If"); :};
+                                                                                                            int posActual = pa.getActualPosition();
+                                                                                                            Stack<Integer> condtStack = ut.getConditionStack();
 
-condicion ::= expression op_comp expression {: System.out.println("Condicion de IF simple");
-                                               ut.checkConditionType();
+                                                                                                            while(!condtStack.isEmpty()) {
+                                                                                                                int posBranch = condtStack.pop();
+                                                                                                                pa.insertarEnPos(posBranch , "" + posActual);
+                                                                                                            }
+
+                                                                                                         :};
+
+if_else_decl ::= IF OPEN_BRACKET condicion CLOSE_BRACKET CURLY_BRACKET_OPN sentencias_pgrm CURLY_BRACKET_CLSD {:
+                                                                                                                pa.insertar("BI");
+                                                                                                                int posBranch = ut.desapilarConditionStack();
+                                                                                                                int posActual = pa.getActualPosition();
+                                                                                                                pa.insertarEnPos(posBranch, "" + (posActual+1));
+                                                                                                                ut.apilarConditionStack(posActual);
+                                                                                                                pa.avanzar();
+                                                                                                              :}
+                 ELSE CURLY_BRACKET_OPN sentencias_pgrm CURLY_BRACKET_CLSD {:
+                                                                              int posBranch = ut.desapilarConditionStack();
+                                                                              int posActual = pa.getActualPosition();
+                                                                              pa.insertarEnPos(posBranch, "" + posActual);
+                                                                           :};
+
+condicion ::= expression op_comp expression {:
+                                                System.out.println("Condicion de IF simple");
+                                                ut.checkConditionType();
+
+                                                pa.insertar("CMP");
+                                                pa.insertar(ut.getCmpETQ(ut.getAuxCmp()));
+                                                ut.apilarConditionStack(pa.getActualPosition());
+                                                pa.avanzar();
                                             :}
-            | NOT expression op_comp expression {: System.out.println("Condicion de IF 'NOT' simple");
+            | NOT expression op_comp expression {:
+                                                   System.out.println("Condicion de IF 'NOT' simple");
                                                    ut.checkConditionType();
+                                                   pa.insertar("CMP");
+                                                   pa.insertar(ut.getOppositeCmpETQ(ut.getAuxCmp()));
+                                                   ut.apilarConditionStack(pa.getActualPosition());
+                                                   pa.avanzar();
+
                                                 :}
 
-            | expression op_comp expression AND expression op_comp expression {: System.out.println("Condicion de IF multiple 'AND'");
-                                                                                 ut.checkConditionType();
-                                                                              :}
-            | NOT expression op_comp expression AND expression op_comp expression {: System.out.println("Condicion de IF multiple 'AND' y 'NOT' al inicio");
-                                                                                     ut.checkConditionType();
-                                                                                  :}
-            | expression op_comp expression AND NOT expression op_comp expression {: System.out.println("Condicion de IF multiple 'AND' y 'NOT' al final");
-                                                                                     ut.checkConditionType();
-                                                                                  :}
-            | NOT expression op_comp expression AND NOT expression op_comp expression {: System.out.println("Condicion de IF multiple 'AND' y 'NOT' en ambas condiciones");
-                                                                                         ut.checkConditionType();
-                                                                                      :}
+            |  condicion_izq_and condicion_der_and {: System.out.println("If AND If sentence"); :}
 
-            | expression op_comp expression OR expression op_comp expression {: System.out.println("Condicion de IF multiple 'OR'");
-                                                                                ut.checkConditionType();
-                                                                             :}
-            | NOT expression op_comp expression OR expression op_comp expression {: System.out.println("Condicion de IF multiple 'OR' y 'NOT' al inicio");
-                                                                                    ut.checkConditionType();
-                                                                                 :}
-            | expression op_comp expression OR NOT expression op_comp expression {: System.out.println("Condicion de IF multiple 'OR' y 'NOT' al final");
-                                                                                    ut.checkConditionType();
-                                                                                 :}
-            | NOT expression op_comp expression OR NOT expression op_comp expression {: System.out.println("Condicion de IF multiple 'OR' y 'NOT' en ambas condiciones");
-                                                                                        ut.checkConditionType();
-                                                                                     :}
+            | condicion_izq_and_neg condicion_der_and {: System.out.println("NOT If AND If sentence"); :}
+
+            | condicion_izq_and condicion_der_and_neg {: System.out.println("If AND NOT If sentence"); :}
+
+            | condicion_izq_and_neg condicion_der_and_neg {: System.out.println("NOT If AND NOT If sentence"); :}
+
+            | condicion_izq_or condicion_der_or  {: System.out.println("If OR If sentence"); :}
+
+            | condicion_izq_or_neg condicion_der_or {: System.out.println("NOT If OR If sentence"); :}
+
+            | condicion_izq_or condicion_der_or_neg  {: System.out.println("If OR NOT If sentence"); :}
+
+            | condicion_izq_or_neg condicion_der_or_neg {: System.out.println("NOT If OR NOT If"); :}
 
             | function {: System.out.println("Funcion como comparacion"); :};
 
-op_comp ::= GE {: System.out.println("Operador >="); :}
-            | LE {: System.out.println("Operador <="); :}
-            | G {: System.out.println("Operador >"); :}
-            | L {: System.out.println("Operador <"); :}
-            | EQ {: System.out.println("Operador =="); :}
-            | NEQ {: System.out.println("Operador !="); :};
+op_comp ::= GE {: System.out.println("Operador >=");
+                  ut.setAuxCmp(">=");
+               :}
+            | LE {: System.out.println("Operador <=");
+                    ut.setAuxCmp("<=");
+                 :}
+            | G {: System.out.println("Operador >");
+                   ut.setAuxCmp(">");
+                :}
+            | L {: System.out.println("Operador <");
+                   ut.setAuxCmp("<");
+                :}
+            | EQ {: System.out.println("Operador ==");
+                    ut.setAuxCmp("==");
+                 :}
+            | NEQ {: System.out.println("Operador !=");
+                     ut.setAuxCmp("!=");
+                  :};
 
-write_sent ::= WRITE OPEN_BRACKET CTE_S CLOSE_BRACKET {: System.out.println("Write con STRING literal"); :}
-             | WRITE OPEN_BRACKET IDENTIFIER:id {: st.checkUndeclaredVariable("" + id); :} CLOSE_BRACKET {: System.out.println("Write con variable"); :};
+write_sent ::= WRITE OPEN_BRACKET CTE_S:str CLOSE_BRACKET {:
+                                                        System.out.println("Write con STRING literal");
+                                                        pa.insertar("" + str);
+                                                        pa.insertar("write");
+                                                      :}
+             | WRITE OPEN_BRACKET IDENTIFIER:id {: st.checkUndeclaredVariable("" + id); :} CLOSE_BRACKET {:
+                                                                                                            System.out.println("Write con variable");
+                                                                                                            pa.insertar("" + id);
+                                                                                                            pa.insertar("write");
+                                                                                                         :};
 
-read_sent ::= READ OPEN_BRACKET IDENTIFIER:id {: st.checkUndeclaredVariable("" + id); :} CLOSE_BRACKET {: System.out.println("Lectura de una variable"); :};
+read_sent ::= READ OPEN_BRACKET IDENTIFIER:id {: st.checkUndeclaredVariable("" + id); :} CLOSE_BRACKET {:
+                                                                                                            System.out.println("Lectura de una variable");
+                                                                                                            pa.insertar("" + id);
+                                                                                                            pa.insertar("read");
+                                                                                                       :};
 
-bloque_while ::= WHILE OPEN_BRACKET condicion CLOSE_BRACKET CURLY_BRACKET_OPN sentencias_pgrm CURLY_BRACKET_CLSD {: System.out.println("Bloque While"); :};
+bloque_while ::= WHILE {: ut.apilarConditionStack(pa.getActualPosition()); pa.insertar("INI"); :} OPEN_BRACKET condicion CLOSE_BRACKET CURLY_BRACKET_OPN sentencias_pgrm CURLY_BRACKET_CLSD {:
+                                                                                                                                                                                                System.out.println("Bloque While");
+                                                                                                                                                                                                pa.insertar("BI");
+                                                                                                                                                                                                int posBranch = ut.desapilarConditionStack();
+                                                                                                                                                                                                int posActual = pa.getActualPosition();
+                                                                                                                                                                                                pa.insertarEnPos(posBranch , "" + (posActual+1));
+                                                                                                                                                                                                posBranch = ut.desapilarConditionStack();
+                                                                                                                                                                                                pa.insertar("" + posBranch);
+                                                                                                                                                                                            :};
 
 sentence ::= assignment {: System.out.println("End"); :};
 assignment ::= IDENTIFIER:id ASSIG expression {:
@@ -189,6 +270,9 @@ assignment ::= IDENTIFIER:id ASSIG expression {:
                                                  ut.vaciarIntType();
                                                  ut.vaciarFloatType();
 
+                                                 pa.insertar("" + id);
+                                                 pa.insertar("=");
+
                                               :};
 
 valid_expression ::= expression {:
@@ -201,42 +285,187 @@ valid_expression ::= expression {:
 
                                 :};
 
-expression ::= expression PLUS term {: System.out.println("+"); :};
-expression ::= expression SUB term {: System.out.println("-"); :};
+expression ::= expression PLUS term {: System.out.println("+");
+                                       pa.insertar("+");
+                                    :};
+expression ::= expression SUB term {: System.out.println("-");
+                                      pa.insertar("-");
+                                   :};
 expression ::= term {: System.out.println("Expression = Term"); :};
-term ::= term MULT factor {: System.out.println("*"); :};
-term ::= term DIV factor {: System.out.println("/"); :};
+term ::= term MULT factor {: System.out.println("*");
+                             pa.insertar("*");
+                          :};
+term ::= term DIV factor {: System.out.println("/");
+                            pa.insertar("/");
+                         :};
 term ::= factor {: System.out.println("Term = factor"); :};
 
 factor ::= IDENTIFIER:id  {: System.out.println("Id: " + id);
 
                              st.checkUndeclaredVariable("" + id);
-
                              ut.pushDataTypeId(st.getDataType("" + id), "" + id);
+                             pa.insertar("" + id);
 
                           :};
 
 factor ::= INTEGER_CONSTANT:constant {: System.out.println("Constant: " + constant );
 
                                         ut.apilarIntType("int");
-
+                                        pa.insertar("" + constant);
                                      :};
 
 factor ::= FLOAT_CONSTANT:constant {: System.out.println("Constant: " + constant);
 
                                       ut.apilarFloatType("float");
-
+                                      pa.insertar("" + constant);
                                    :};
 
-factor ::= SUB factor {: System.out.println("Regla de mi amigazo <3"); :}; // No olvidarse de cambiar el nombre
+factor ::= SUB factor {: System.out.println("Regla de mi amigazo <3");
+                      :}; // TODO: No olvidarse de cambiar el nombre | Revisar accion semantica
+
 factor ::= OPEN_BRACKET expression CLOSE_BRACKET {: System.out.println("Factor = (Expression)"); :};
 
 function ::= functionE {: System.out.println("Funtion equalExpressions() "); :}
            | functionZ {: System.out.println("Funcion isZero() "); :};
 
-functionE ::= EQUAL_EXPR OPEN_BRACKET l_exp CLOSE_BRACKET {: System.out.println("Funcion equalExpressions"); :};
 
-l_exp ::= l_exp COMA valid_expression {: System.out.println("Lista de Expresiones Multiples"); :}
-      |   valid_expression {: System.out.println("Expresion Simple"); :};
+// TODO : Validar que pasa si tengo una unica expresion
 
-functionZ ::= IS_ZERO OPEN_BRACKET valid_expression CLOSE_BRACKET {: System.out.println("isZero(Expression)"); :};
+functionE ::= EQUAL_EXPR OPEN_BRACKET l_exp CLOSE_BRACKET
+{: 
+   System.out.println("Funcion equalExpressions");
+   int contEE1 = ut.getEECont();
+   int contEE2 = contEE1 - 1;
+
+   while (contEE1 != 2) {
+      while (contEE2 != 0) {
+         pa.insertar("auxEE"+ contEE1);
+         pa.insertar("auxEE"+ contEE2);
+         pa.insertar("CMP");
+         pa.insertar("BE");
+         ut.apilarConditionStack(pa.getActualPosition());
+         pa.avanzar();
+         contEE2--;
+      }
+      contEE1--;
+      contEE2 = contEE1 - 1;
+   }
+
+   pa.insertar("auxEE"+ contEE1);
+   pa.insertar("auxEE"+ contEE2);
+   pa.insertar("CMP");
+   pa.insertar("BNE");
+
+   Stack<Integer> conditionStack = ut.getConditionStack();
+   int posActual = pa.getActualPosition();
+
+   while (!conditionStack.isEmpty()) {
+      int posBranch = conditionStack.pop();
+      pa.insertarEnPos(posBranch, "" + (posActual+1));
+   }
+   ut.apilarConditionStack(pa.getActualPosition());
+   pa.avanzar();
+:};
+
+l_exp ::= l_exp COMA valid_expression
+{: 
+   System.out.println("Lista de Expresiones Multiples");
+   ut.increaseEECont();
+   pa.insertar("auxEE"+ut.getEECont());
+   pa.insertar("=");
+:};
+
+l_exp ::= valid_expression
+{: 
+   System.out.println("Expresion Simple");
+   ut.increaseEECont();
+   pa.insertar("auxEE"+ut.getEECont());
+   pa.insertar("=");
+:};
+
+functionZ ::= IS_ZERO OPEN_BRACKET valid_expression CLOSE_BRACKET {:
+                                                                    System.out.println("isZero(Expression)");
+                                                                    pa.insertar("" + 0);
+                                                                    pa.insertar("CMP");
+                                                                    pa.insertar("BNE");
+                                                                    ut.apilarConditionStack(pa.getActualPosition());
+                                                                    pa.avanzar();
+                                                                  :};
+
+
+
+condicion_izq_and ::= expression op_comp expression AND {:
+                                                          ut.checkConditionType();
+                                                          pa.insertar("CMP");
+                                                          pa.insertar(ut.getCmpETQ(ut.getAuxCmp()));
+                                                          ut.apilarConditionStack(pa.getActualPosition());
+                                                          pa.avanzar();
+                                                       :};
+
+condicion_izq_and_neg ::= NOT expression op_comp expression AND {:
+                                                                    ut.checkConditionType();
+                                                                    pa.insertar("CMP");
+                                                                    pa.insertar(ut.getOppositeCmpETQ(ut.getAuxCmp()));
+                                                                    ut.apilarConditionStack(pa.getActualPosition());
+                                                                    pa.avanzar();
+                                                                :};
+
+condicion_izq_or ::= expression op_comp expression OR {:
+                                                          ut.checkConditionType();
+                                                          pa.insertar("CMP");
+                                                          pa.insertar(ut.getOppositeCmpETQ(ut.getAuxCmp()));
+                                                          ut.apilarConditionStack(pa.getActualPosition());
+                                                          pa.avanzar();
+                                                      :};
+
+condicion_izq_or_neg ::= NOT expression op_comp expression OR {:
+                                                                   ut.checkConditionType();
+                                                                   pa.insertar("CMP");
+                                                                   pa.insertar(ut.getCmpETQ(ut.getAuxCmp()));
+                                                                   ut.apilarConditionStack(pa.getActualPosition());
+                                                                   pa.avanzar();
+                                                              :};
+
+condicion_der_and ::= expression op_comp expression {:
+                                                        System.out.println("Condicion de IF multiple 'AND'");
+                                                        ut.checkConditionType();
+                                                        pa.insertar("CMP");
+                                                        pa.insertar(ut.getCmpETQ(ut.getAuxCmp()));
+                                                        ut.apilarConditionStack(pa.getActualPosition());
+                                                        pa.avanzar();
+                                                    :};
+
+condicion_der_and_neg ::= NOT expression op_comp expression {:
+                                                                ut.checkConditionType();
+                                                                pa.insertar("CMP");
+                                                                pa.insertar(ut.getOppositeCmpETQ(ut.getAuxCmp()));
+                                                                ut.apilarConditionStack(pa.getActualPosition());
+                                                                pa.avanzar();
+                                                            :};
+
+condicion_der_or ::= expression op_comp expression {:
+                                                         System.out.println("Condicion de IF multiple 'OR'");
+                                                         ut.checkConditionType();
+                                                         pa.insertar("CMP");
+                                                         pa.insertar(ut.getCmpETQ(ut.getAuxCmp()));
+                                                         int posBranch = ut.desapilarConditionStack();
+                                                         int posActual = pa.getActualPosition();
+                                                         pa.insertarEnPos(posBranch, "" + (posActual+1));
+                                                         ut.apilarConditionStack(posActual);
+                                                         pa.avanzar();
+
+                                                   :};
+
+condicion_der_or_neg ::= NOT expression op_comp expression {:
+                                                                System.out.println("Condicion de IF multiple 'OR'");
+                                                                ut.checkConditionType();
+                                                                pa.insertar("CMP");
+                                                                pa.insertar(ut.getOppositeCmpETQ(ut.getAuxCmp()));
+                                                                int posBranch = ut.desapilarConditionStack();
+                                                                int posActual = pa.getActualPosition();
+                                                                pa.insertarEnPos(posBranch, "" + (posActual+1));
+                                                                ut.apilarConditionStack(posActual);
+                                                                pa.avanzar();
+
+                                                           :};
+

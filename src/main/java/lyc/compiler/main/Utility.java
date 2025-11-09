@@ -23,7 +23,16 @@ public class Utility {
     //TODO: En desarrollo: Implementacion de pila para asegurar compatibilidad de tipos en expresiones aritmeticas
     private Stack<String> intTypeStack = new Stack<>();
     private Stack<String> floatTypeStack = new Stack<>();
-
+    private Stack<String> paStack = new Stack<>();
+    private Stack<String> auxStack = new Stack<>();
+    private Stack<Integer> conditionStack = new Stack<>();
+    private String auxCmp;
+    
+    //TODO: Experimentacion de EqualExpressions, totalmente debatible implementacion de GCI
+    private int EE_cont = 0;
+    public int getEECont() { return EE_cont; }
+    public void increaseEECont() { EE_cont++; }
+    
     // apilar
     public void apilarId(String id) {
         idStack.push(id);
@@ -31,10 +40,16 @@ public class Utility {
     public void apilarType(String type) { typeStack.push(type); }
     public void apilarIntType(String type) { intTypeStack.push(type); }
     public void apilarFloatType(String type) { floatTypeStack.push(type); }
+    public void apilarPa(String pa) { paStack.push(pa); }
+    public void apilarAux(String aux) { auxStack.push(aux); }
+    public void apilarConditionStack(int pos) { conditionStack.push(pos); }
 
     // desapilar
     public String desapilarId() { return idStack.pop(); }
     public String desapilarType() { return typeStack.pop(); }
+    public String desapilarPa() { return paStack.pop(); }
+    public String desapilarAux() { return auxStack.pop(); }
+    public Integer desapilarConditionStack() { return  conditionStack.pop(); }
 
     // vaciar
     public void vaciarIntType() { intTypeStack = new Stack<>(); }
@@ -44,6 +59,9 @@ public class Utility {
     public Stack<String> getIdStack () { return idStack; }
     public Stack<String> getIntTypeStack () { return intTypeStack; }
     public Stack<String> getFloatTypeStack() { return floatTypeStack; }
+    public Stack<String> getPaStack () { return paStack; }
+    public Stack<String> getAuxStack () { return auxStack; }
+    public Stack<Integer> getConditionStack () { return conditionStack; }
 
     public boolean notEmptyTypeStacks() {
 
@@ -64,7 +82,6 @@ public class Utility {
                 break;
 
             case "String": throw new RuntimeException("La variable \"" + id + "\" es de tipo String, no puede utilizarse en una expresion aritmetica.");
-
 
             default: throw new RuntimeException("Tipo de Dato no soportado.");
 
@@ -97,4 +114,35 @@ public class Utility {
         vaciarFloatType();
         vaciarIntType();
     }
+
+    public void setAuxCmp(String auxCmp) { this.auxCmp = auxCmp; }
+
+    public String getAuxCmp() { return this.auxCmp; }
+
+    public String getCmpETQ(String opCmp) {
+
+        return switch (opCmp) {
+            case ">=" -> "BLT";
+            case "<=" -> "BGT";
+            case ">" -> "BLE";
+            case "<" -> "BGE";
+            case "==" -> "BNE";
+            case "!=" -> "BE";
+            default -> throw new RuntimeException("Operador de comparacion no existente.");
+        };
+    }
+
+    public String getOppositeCmpETQ(String opCmp) {
+
+        return switch (opCmp) {
+            case ">=" -> "BGE";
+            case "<=" -> "BLE";
+            case ">" -> "BGT";
+            case "<" -> "BLT";
+            case "==" -> "BE";
+            case "!=" -> "BNE";
+            default -> throw new RuntimeException("Operador de comparacion no existente.");
+        };
+    }
+
 }
