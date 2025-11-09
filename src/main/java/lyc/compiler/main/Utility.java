@@ -27,7 +27,12 @@ public class Utility {
     private Stack<String> auxStack = new Stack<>();
     private Stack<Integer> conditionStack = new Stack<>();
     private String auxCmp;
-
+    
+    //TODO: Experimentacion de EqualExpressions, totalmente debatible implementacion de GCI
+    private int EE_cont = 0;
+    public int getEECont() { return EE_cont; }
+    public void increaseEECont() { EE_cont++; }
+    
     // apilar
     public void apilarId(String id) {
         idStack.push(id);

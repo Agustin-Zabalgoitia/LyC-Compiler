@@ -1,8 +1,8 @@
 init {
 
-    a : Int
+    a , b , c , d : Int
 }
 
-if(isZero(2-2)) {
+if(a > 2) {
     write(a)
 }

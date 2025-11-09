@@ -84,6 +84,26 @@ public class PolishArray {
         }
     }
 
+    public void exportToAssemblerFile() {
+        String filePath = "D:\\Universidad\\Lenguajes_y_Compiladores\\Compilador_GITHUB\\LyC-Compiler\\examples\\GCI_Assembler.txt";
+
+        try (FileWriter writer = new FileWriter(filePath)) {
+            for (String value : pa) {
+                if (value != null && !value.trim().isEmpty()) {
+                    // cada símbolo en su propia línea
+                    writer.write(value.trim());
+                    writer.write(System.lineSeparator());
+                }
+            }
+
+            writer.flush();
+            System.out.println("✅ Archivo Polaca exportado en formato lineal (listo para traducción ASM): " + filePath);
+        } catch (IOException e) {
+            System.err.println("❌ Error al exportar archivo ASM: " + e.getMessage());
+        }
+    }
+
+
 
 
 }
