@@ -328,20 +328,23 @@ function ::= functionE {: System.out.println("Funtion equalExpressions() "); :}
            | functionZ {: System.out.println("Funcion isZero() "); :};
 
 
+// TODO : Validar que pasa si tengo una unica expresion
+
 functionE ::= EQUAL_EXPR OPEN_BRACKET l_exp CLOSE_BRACKET
 {: 
    System.out.println("Funcion equalExpressions");
    int contEE1 = ut.getEECont();
    int contEE2 = contEE1 - 1;
 
-   while (contEE1 <> 2) {
-      while (contEE2 <> 0) {
+   while (contEE1 != 2) {
+      while (contEE2 != 0) {
          pa.insertar("auxEE"+ contEE1);
          pa.insertar("auxEE"+ contEE2);
          pa.insertar("CMP");
          pa.insertar("BE");
          ut.apilarConditionStack(pa.getActualPosition());
          pa.avanzar();
+         contEE2--;
       }
       contEE1--;
       contEE2 = contEE1 - 1;
@@ -369,7 +372,7 @@ l_exp ::= l_exp COMA valid_expression
    ut.increaseEECont();
    pa.insertar("auxEE"+ut.getEECont());
    pa.insertar("=");
-:}
+:};
 
 l_exp ::= valid_expression
 {: 

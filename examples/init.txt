@@ -3,6 +3,6 @@ init {
     a : Int
 }
 
-if(isZero(2-2)) {
+if(equalExpressions(2-2 , 0 , 2)) {
     write(a)
 }
