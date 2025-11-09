@@ -1,10 +1,8 @@
 init {
 
-    a , b , c , d : Int
-    e , f , g : String
-    h : Float
+    a : Int
 }
 
-a = a + 1
-e = "Pepe po"
-
+if(isZero(2-2)) {
+    write(a)
+}

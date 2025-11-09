@@ -27,11 +27,11 @@ public class PolishArray {
 
     public void insertar(String value) {
         pa.add(value);
-        avanzar();
+        actualPosition++;
     }
 
     public void insertarEnPos(int pos , String value) {
-        pa.add(pos, value);
+        pa.set(pos, value);
     }
 
     public int getActualPosition() {
@@ -39,6 +39,7 @@ public class PolishArray {
     }
 
     public void avanzar() {
+        pa.add("");
         actualPosition++;
     }
 
