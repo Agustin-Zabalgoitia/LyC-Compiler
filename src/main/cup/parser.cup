@@ -327,10 +327,57 @@ factor ::= OPEN_BRACKET expression CLOSE_BRACKET {: System.out.println("Factor =
 function ::= functionE {: System.out.println("Funtion equalExpressions() "); :}
            | functionZ {: System.out.println("Funcion isZero() "); :};
 
-functionE ::= EQUAL_EXPR OPEN_BRACKET l_exp CLOSE_BRACKET {: System.out.println("Funcion equalExpressions"); :};
 
-l_exp ::= l_exp COMA valid_expression {: System.out.println("Lista de Expresiones Multiples"); :}
-      |   valid_expression {: System.out.println("Expresion Simple"); :};
+functionE ::= EQUAL_EXPR OPEN_BRACKET l_exp CLOSE_BRACKET
+{: 
+   System.out.println("Funcion equalExpressions");
+   int contEE1 = ut.getEECont();
+   int contEE2 = contEE1 - 1;
+
+   while (contEE1 <> 2) {
+      while (contEE2 <> 0) {
+         pa.insertar("auxEE"+ contEE1);
+         pa.insertar("auxEE"+ contEE2);
+         pa.insertar("CMP");
+         pa.insertar("BE");
+         ut.apilarConditionStack(pa.getActualPosition());
+         pa.avanzar();
+      }
+      contEE1--;
+      contEE2 = contEE1 - 1;
+   }
+
+   pa.insertar("auxEE"+ contEE1);
+   pa.insertar("auxEE"+ contEE2);
+   pa.insertar("CMP");
+   pa.insertar("BNE");
+
+   Stack<Integer> conditionStack = ut.getConditionStack();
+   int posActual = pa.getActualPosition();
+
+   while (!conditionStack.isEmpty()) {
+      int posBranch = conditionStack.pop();
+      pa.insertarEnPos(posBranch, "" + (posActual+1));
+   }
+   ut.apilarConditionStack(pa.getActualPosition());
+   pa.avanzar();
+:};
+
+l_exp ::= l_exp COMA valid_expression
+{: 
+   System.out.println("Lista de Expresiones Multiples");
+   ut.increaseEECont();
+   pa.insertar("auxEE"+ut.getEECont());
+   pa.insertar("=");
+:}
+
+l_exp ::= valid_expression
+{: 
+   System.out.println("Expresion Simple");
+   ut.increaseEECont();
+   pa.insertar("auxEE"+ut.getEECont());
+   pa.insertar("=");
+:};
 
 functionZ ::= IS_ZERO OPEN_BRACKET valid_expression CLOSE_BRACKET {:
                                                                     System.out.println("isZero(Expression)");
