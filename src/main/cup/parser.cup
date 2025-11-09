@@ -69,6 +69,7 @@ algo ::= PUBLIC STATIC VOID MAIN OPEN_BRACKET STRING SQUARE_BRACKET_OPN SQUARE_B
 
 program ::= block_ini block_pgrm {: System.out.println("Inicio de Programa -> bloque inicial + bloques");
                                     pa.exportToFile();
+                                    pa.exportToAssemblerFile();
                                  :}
         |   block_ini {: System.out.println("Inicio de Programa -> bloque inicial sin programa"); :};
 
@@ -96,12 +97,12 @@ sentencia_var ::= variables COLON tipo {:
                                             while(!stack.isEmpty()) {
                                                 st.addType(stack.pop(), tipoDato);
                                             }
-
+                                            /*
                                             while(!auxStack.isEmpty()) {
                                                 pa.insertar(type);
                                                 pa.insertar(auxStack.pop());
                                                 pa.insertar(":");
-                                            }
+                                            } */
                                        :};
 
 variables ::= variables COMA variable {: System.out.println("Multiple Declaracion de Variables"); :}
