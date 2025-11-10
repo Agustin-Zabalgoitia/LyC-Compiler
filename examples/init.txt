@@ -1,8 +1,7 @@
 init {
 
     a , b , c , d : Int
+    e : String
 }
 
-if(a > 2) {
-    write(a)
-}
+a = (b + (2 * 3) + 7) / (3 * 2)
