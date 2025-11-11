@@ -4,4 +4,9 @@ init {
     e : String
 }
 
-a = (b + (2 * 3) + 7) / (3 * 2)
+a = 5
+
+c = d
+
+e = "Chau"
+

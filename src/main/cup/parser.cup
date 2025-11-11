@@ -138,7 +138,7 @@ asignacion ::= sentence {: System.out.println("Asignacion Numerica (Sentencia)")
                                                     st.checkUndeclaredVariable("" + id);
                                                     st.checkStringAssig("" + id);
 
-                                                    pa.insertar("" + string);
+                                                    pa.insertar("\"" + string + "\"");
                                                     pa.insertar("" + id);
                                                     pa.insertar("=");
                                                 :};
