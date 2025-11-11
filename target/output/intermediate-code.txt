@@ -6,6 +6,8 @@
 | c                         | Int                       | -                         | -                         |
 | d                         | Int                       | -                         | -                         |
 | e                         | String                    | -                         | -                         |
-| _10                       | CTE_INTEGER               | 10                        | -                         |
-| _"papu bel tkm"           | CTE_STRING                | "papu bel tkm"            | 14                        |
+| _3                        | CTE_INTEGER               | 3                         | -                         |
+| _5                        | CTE_INTEGER               | 5                         | -                         |
+| _"El valor de 'a' es > al de 'b'" | CTE_STRING                | "El valor de 'a' es > al de 'b'" | 32                        |
+| _"El valor de 'a' no es > al de 'b" | CTE_STRING                | "El valor de 'a' no es > al de 'b" | 34                        |
 +---------------------------+---------------------------+---------------------------+---------------------------+

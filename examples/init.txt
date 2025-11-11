@@ -4,11 +4,12 @@ init {
     e : String
 }
 
-a = 10
+a = 3
+b = 5
 
-if(a == 10) {
-    write("papu bel tkm")
+if(a > b) {
+    write("El valor de 'a' es > al de 'b'")
 }
 else {
-    write(e)
+    write("El valor de 'a' no es > al de 'b")
 }

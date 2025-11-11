@@ -1,14 +1,17 @@
-10
+3
 a
 =
+5
+b
+=
 a
-10
+b
 CMP
-BNE
-12
-"papu bel tkm"
+BLE
+15
+"El valor de 'a' es > al de 'b'"
 write
 BI
-14
-e
+17
+"El valor de 'a' no es > al de 'b"
 write

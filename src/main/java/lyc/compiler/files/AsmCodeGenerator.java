@@ -32,6 +32,8 @@ public class AsmCodeGenerator implements FileGenerator {
     String op2;
     String op1;
     boolean flagExp = false;
+    boolean flagExpIzq = false;
+    boolean flagExpDer = false;
 
     @Override
     public void generate(FileWriter fileWriter) throws IOException {
@@ -66,10 +68,8 @@ public class AsmCodeGenerator implements FileGenerator {
             } */
 
             if(row[COL_DATA_TYPE].equals("CTE_STRING")) {
-                String auxCte = row[COL_NAME].replace("\"", "");
-                auxCte = auxCte.replace(" ", "_");
                 row[COL_VALUE] = row[COL_VALUE].substring(0 , row[COL_VALUE].length() - 1) + "$\"";
-                fileWriter.write(  auxCte+ "\t" + "db" + "\t" + row[COL_VALUE] + "\t" + ",0\n" );
+                fileWriter.write(  ut.normalizeStringLabel(row[COL_NAME]) + "\t" + "db" + "\t" + row[COL_VALUE] + "\t" + ",0\n" );
             }
 
         }
@@ -203,13 +203,13 @@ public class AsmCodeGenerator implements FileGenerator {
                         case "Int":
                         case "Float":
                                  fileWriter.write("DisplayFloat " +  var + ", 2" + "\n");
+                                 fileWriter.write("newLine \n");
                                  break;
 
                         case "String":
                         case "CTE_STRING":
-                                  var = var.replace("\"", "");
-                                  var = var.replace(" ", "_");
-                                  fileWriter.write("displayString " +  var + "\n");
+                                  fileWriter.write("displayString " +  ut.normalizeStringLabel(var) + "\n");
+                                  fileWriter.write("newLine \n");
                                   break;
                     }
                     break;
@@ -224,9 +224,11 @@ public class AsmCodeGenerator implements FileGenerator {
                         case "Int":
                         case "Float":
                             fileWriter.write("GetFloat " +   var + "\n");
+                            break;
 
                         case "String":
                             fileWriter.write("getString " +  var + "\n");
+                            break;
 
                     }
 
@@ -245,7 +247,6 @@ public class AsmCodeGenerator implements FileGenerator {
                     if(op1.matches("[0-9].*")) {
                         op1 = cteIntoVar(op1);
                     }
-
 
                     fileWriter.write("fld " + op1 + "\n");
                     fileWriter.write("fld " + op2 + "\n");
