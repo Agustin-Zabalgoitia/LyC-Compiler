@@ -36,6 +36,8 @@ public class AsmCodeGenerator implements FileGenerator {
     @Override
     public void generate(FileWriter fileWriter) throws IOException {
 
+        fileWriter.write("include macros2.asm\n");
+        fileWriter.write("include number.asm\n\n");
         fileWriter.write(".MODEL LARGE\n");
         fileWriter.write(".386\n");
         fileWriter.write(".STACK 200h\n\n");
