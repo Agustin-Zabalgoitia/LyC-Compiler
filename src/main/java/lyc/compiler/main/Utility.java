@@ -20,15 +20,13 @@ public class Utility {
 
     private Stack<String> idStack = new Stack<>();
     private Stack<String> typeStack = new Stack<>();
-    //TODO: En desarrollo: Implementacion de pila para asegurar compatibilidad de tipos en expresiones aritmeticas
     private Stack<String> intTypeStack = new Stack<>();
     private Stack<String> floatTypeStack = new Stack<>();
     private Stack<String> paStack = new Stack<>();
     private Stack<String> auxStack = new Stack<>();
     private Stack<Integer> conditionStack = new Stack<>();
     private String auxCmp;
-    
-    //TODO: Experimentacion de EqualExpressions, totalmente debatible implementacion de GCI
+
     private int EE_cont = 0;
     public int getEECont() { return EE_cont; }
     public void increaseEECont() { EE_cont++; }

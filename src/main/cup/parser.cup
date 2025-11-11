@@ -329,7 +329,7 @@ function ::= functionE {: System.out.println("Funtion equalExpressions() "); :}
            | functionZ {: System.out.println("Funcion isZero() "); :};
 
 
-// TODO : Validar que pasa si tengo una unica expresion
+// TODO : equalExpressions: Validar que pasa si tengo una unica expresion
 
 functionE ::= EQUAL_EXPR OPEN_BRACKET l_exp CLOSE_BRACKET
 {: 

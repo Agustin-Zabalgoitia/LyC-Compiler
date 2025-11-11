@@ -69,8 +69,6 @@ public class AsmCodeGenerator implements FileGenerator {
         fileWriter.write("MOV DS, AX\n");
         fileWriter.write("MOV ES, AX\n\n");
 
-        // Todo : Pasar toda la symbol-table a asm | Revisar los tipos de datos de las variables
-
         List<String> tokens = Files.readAllLines(Paths.get("D:\\Universidad\\Lenguajes_y_Compiladores\\Compilador_GITHUB\\LyC-Compiler\\examples\\GCI_Assembler.txt"));
 
         for(String token : tokens) {
@@ -196,7 +194,6 @@ public class AsmCodeGenerator implements FileGenerator {
                     break;
                 
                 case("CMP"):
-                    // Todo: ¿Los fld en otro lado o acá tmb?
 
                     op2 = coProStack.pop();
                     op1 = coProStack.pop();
