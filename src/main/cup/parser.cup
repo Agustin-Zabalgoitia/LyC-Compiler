@@ -138,7 +138,7 @@ asignacion ::= sentence {: System.out.println("Asignacion Numerica (Sentencia)")
                                                     st.checkUndeclaredVariable("" + id);
                                                     st.checkStringAssig("" + id);
 
-                                                    pa.insertar("" + string);
+                                                    pa.insertar("\"" + string + "\"");
                                                     pa.insertar("" + id);
                                                     pa.insertar("=");
                                                 :};
@@ -231,7 +231,7 @@ op_comp ::= GE {: System.out.println("Operador >=");
 
 write_sent ::= WRITE OPEN_BRACKET CTE_S:str CLOSE_BRACKET {:
                                                         System.out.println("Write con STRING literal");
-                                                        pa.insertar("" + str);
+                                                        pa.insertar("\"" + str + "\"");
                                                         pa.insertar("write");
                                                       :}
              | WRITE OPEN_BRACKET IDENTIFIER:id {: st.checkUndeclaredVariable("" + id); :} CLOSE_BRACKET {:
@@ -329,7 +329,7 @@ function ::= functionE {: System.out.println("Funtion equalExpressions() "); :}
            | functionZ {: System.out.println("Funcion isZero() "); :};
 
 
-// TODO : Validar que pasa si tengo una unica expresion
+// TODO : equalExpressions: Validar que pasa si tengo una unica expresion
 
 functionE ::= EQUAL_EXPR OPEN_BRACKET l_exp CLOSE_BRACKET
 {: 

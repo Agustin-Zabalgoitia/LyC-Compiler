@@ -1,7 +1,17 @@
+3
 a
-2
+=
+5
+b
+=
+a
+b
 CMP
 BLE
-7
-a
+15
+"El valor de 'a' es > al de 'b'"
+write
+BI
+17
+"El valor de 'a' no es > al de 'b"
 write

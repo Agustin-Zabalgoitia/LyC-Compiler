@@ -1,8 +1,15 @@
 init {
 
     a , b , c , d : Int
+    e : String
 }
 
-if(a > 2) {
-    write(a)
+a = 3
+b = 5
+
+if(a > b) {
+    write("El valor de 'a' es > al de 'b'")
+}
+else {
+    write("El valor de 'a' no es > al de 'b")
 }
