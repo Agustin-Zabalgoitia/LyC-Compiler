@@ -60,8 +60,16 @@ public class AsmCodeGenerator implements FileGenerator {
                 fileWriter.write(row[COL_NAME] + "\t" + "dd" + "\t" + row[COL_VALUE] + "\n");
             }
 
+            /*
             if(row[COL_DATA_TYPE].equals("CTE_STRING")) {
                 fileWriter.write(row[COL_NAME] + "\t" + "db" + "\t" + row[COL_VALUE] + "\t" + "$" + row[COL_LENGTH] + "\t" + "dup(?)\n" );
+            } */
+
+            if(row[COL_DATA_TYPE].equals("CTE_STRING")) {
+                String auxCte = row[COL_NAME].replace("\"", "");
+                auxCte = auxCte.replace(" ", "_");
+                row[COL_VALUE] = row[COL_VALUE].substring(0 , row[COL_VALUE].length() - 1) + "$\"";
+                fileWriter.write(  auxCte+ "\t" + "db" + "\t" + row[COL_VALUE] + "\t" + ",0\n" );
             }
 
         }
@@ -69,6 +77,7 @@ public class AsmCodeGenerator implements FileGenerator {
         fileWriter.write("\n\n\n");
 
         fileWriter.write("\n.CODE\n\n");
+        fileWriter.write("START: \n\n");
         fileWriter.write("MOV AX, @DATA\n");
         fileWriter.write("MOV DS, AX\n");
         fileWriter.write("MOV ES, AX\n\n");
@@ -81,7 +90,7 @@ public class AsmCodeGenerator implements FileGenerator {
 
             if(listaEtiquetas.contains(contPA))
             {
-                fileWriter.write("[et_" + contPA + "]:\n");
+                fileWriter.write("et_" + contPA + ":\n");
             }
 
             switch(token) {
@@ -132,7 +141,7 @@ public class AsmCodeGenerator implements FileGenerator {
                                    break;
                     }
 
-                    fileWriter.write("ffree 0\n");
+                    fileWriter.write("ffree st(0)\n");
 
                     flagExp = true;
 
@@ -193,11 +202,13 @@ public class AsmCodeGenerator implements FileGenerator {
 
                         case "Int":
                         case "Float":
-                                 fileWriter.write("DisplayFloat " +  var + "\n");
+                                 fileWriter.write("DisplayFloat " +  var + ", 2" + "\n");
                                  break;
 
                         case "String":
                         case "CTE_STRING":
+                                  var = var.replace("\"", "");
+                                  var = var.replace(" ", "_");
                                   fileWriter.write("displayString " +  var + "\n");
                                   break;
                     }
@@ -224,7 +235,17 @@ public class AsmCodeGenerator implements FileGenerator {
                 case("CMP"):
 
                     op2 = coProStack.pop();
+
+                    if(op2.matches("[0-9].*")) {
+                        op2 = cteIntoVar(op2);
+                    }
+
                     op1 = coProStack.pop();
+
+                    if(op1.matches("[0-9].*")) {
+                        op1 = cteIntoVar(op1);
+                    }
+
 
                     fileWriter.write("fld " + op1 + "\n");
                     fileWriter.write("fld " + op2 + "\n");
@@ -236,55 +257,55 @@ public class AsmCodeGenerator implements FileGenerator {
 
                 case("BGE"):
                     numET = tokens.get(contPA + 1);
-                    fileWriter.write("jae [et_" + numET + "]");
+                    fileWriter.write("jae et_" + numET + "\n");
                     listaEtiquetas.add(Integer.parseInt(numET));
                     break;
 
                 case("BLE"):
                     numET = tokens.get(contPA + 1);
-                    fileWriter.write("jna [et_" + numET + "]\n");
+                    fileWriter.write("jna et_" + numET + "\n");
                     listaEtiquetas.add(Integer.parseInt(numET));
                     break;
 
                 case("BGT"):
                     numET = tokens.get(contPA + 1);
-                    fileWriter.write("ja [et_" + numET + "]\n");
+                    fileWriter.write("ja et_" + numET + "\n");
                     listaEtiquetas.add(Integer.parseInt(numET));
                     break;
 
                 case("BLT"):
                     numET = tokens.get(contPA + 1);
-                    fileWriter.write("jb [et_" + numET + "]\n");
+                    fileWriter.write("jb et_" + numET + "\n");
                     listaEtiquetas.add(Integer.parseInt(numET));
                     break;
 
                 case("BNE"):
                     numET = tokens.get(contPA + 1);
-                    fileWriter.write("jne [et_" + numET + "]\n");
+                    fileWriter.write("jne et_" + numET + "\n");
                     listaEtiquetas.add(Integer.parseInt(numET));
                     break;
 
                 case("BEQ"):
                     numET = tokens.get(contPA + 1);
-                    fileWriter.write("je [et_" + numET + "]\n");
+                    fileWriter.write("je et_" + numET + "\n");
                     listaEtiquetas.add(Integer.parseInt(numET));
                     break;
 
                 case("BI"):
                     numET = tokens.get(contPA + 1);
                     if(Integer.parseInt(numET) < contPA) {
-                        fileWriter.write("jmp [INI]\n");
+                        fileWriter.write("jmp INI\n");
 
                     }
                     else {
-                        fileWriter.write("jmp [et_" + numET + "]\n");
+                        fileWriter.write("jmp et_" + numET + "\n");
                         listaEtiquetas.add(Integer.parseInt(numET));
                     }
 
                     break;
 
                 case("INI"):
-                    fileWriter.write("[INI]:\n");
+                    fileWriter.write("INI:\n");
 
                 default:
                     coProStack.push(token);
@@ -296,8 +317,12 @@ public class AsmCodeGenerator implements FileGenerator {
 
         if(listaEtiquetas.contains(contPA))
         {
-            fileWriter.write("[et_" + contPA + "]:\n");
+            fileWriter.write("et_" + contPA + ":\n");
         }
+
+        fileWriter.write("MOV AX, 4C00h\n");
+        fileWriter.write("INT 21h\n");
+        fileWriter.write("END START\n");
 
     }
 

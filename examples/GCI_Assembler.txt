@@ -1,9 +1,14 @@
-5
+10
 a
 =
-d
-c
-=
-"Chau"
+a
+10
+CMP
+BNE
+12
+"papu bel tkm"
+write
+BI
+14
 e
-=
+write

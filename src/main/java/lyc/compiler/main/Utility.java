@@ -27,6 +27,7 @@ public class Utility {
     private Stack<Integer> conditionStack = new Stack<>();
     private String auxCmp;
     private int lbl = 1;
+    private int lbl_2 = 1;
     
     //TODO: Experimentacion de EqualExpressions, totalmente debatible implementacion de GCI
     private int EE_cont = 0;
@@ -151,6 +152,13 @@ public class Utility {
         lbl++;
 
         return label;
+    }
+
+    public String getLabel2() {
+        String label2 = "cte_" + lbl_2;
+        lbl_2++;
+
+        return label2;
     }
 
 }

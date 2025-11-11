@@ -11,28 +11,35 @@ b	dd	?
 c	dd	?
 d	dd	?
 e	dd	?
-_5	dd	5.0
-_"Chau"	db	"Chau"	$6	dup(?)
+_10	dd	10.0
+_papu_bel_tkm	db	"papu bel tkm$"	,0
 
 
 
 
 .CODE
 
+START: 
+
 MOV AX, @DATA
 MOV DS, AX
 MOV ES, AX
 
-fld _5 
+fld _10 
 fstp a 
 
-fld d 
-fstp c 
-
-lea si, msj_1
-lea si, e
-mov cx, 6
-rep movsb
-mov al, 0
-stosb
-
+fld a
+fld _10
+fxch
+fcom
+fstsw ax
+sahf
+jne et_12
+displayString _papu_bel_tkm
+jmp et_14
+et_12:
+displayString e
+et_14:
+MOV AX, 4C00h
+INT 21h
+END START
