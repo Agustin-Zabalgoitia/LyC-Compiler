@@ -1,13 +1,69 @@
 +---------------------------+---------------------------+---------------------------+---------------------------+
 | NOMBRE                    | TIPODATO                  | VALOR                     | LONGITUD                  |
 +---------------------------+---------------------------+---------------------------+---------------------------+
-| a                         | Int                       | -                         | -                         |
-| b                         | Int                       | -                         | -                         |
-| c                         | Int                       | -                         | -                         |
-| d                         | Int                       | -                         | -                         |
-| e                         | String                    | -                         | -                         |
+| a1                        | Float                     | -                         | -                         |
+| a2                        | Float                     | -                         | -                         |
+| a3                        | Float                     | -                         | -                         |
+| a4                        | Float                     | -                         | -                         |
+| a5                        | Float                     | -                         | -                         |
+| z                         | Float                     | -                         | -                         |
+| c1                        | Int                       | -                         | -                         |
+| c2                        | Int                       | -                         | -                         |
+| c3                        | Int                       | -                         | -                         |
+| c4                        | Int                       | -                         | -                         |
+| x                         | Int                       | -                         | -                         |
+| continuar                 | Int                       | -                         | -                         |
+| b1                        | String                    | -                         | -                         |
+| y                         | String                    | -                         | -                         |
+| _""                       | CTE_STRING                | ""                        | 2                         |
+| _"Los mensajes son a modo de DEBUG" | CTE_STRING                | "Los mensajes son a modo de DEBUG" | 34                        |
+| _"--- Asignacion de Variables ---" | CTE_STRING                | "--- Asignacion de Variables ---" | 33                        |
+| _99999.99                 | CTE_FLOAT                 | 99999.99                  | -                         |
+| _"Variable 'a1' -> Float asignada con 99999.99" | CTE_STRING                | "Variable 'a1' -> Float asignada con 99999.99" | 46                        |
+| _3.5                      | CTE_FLOAT                 | 3.5                       | -                         |
+| _4.2                      | CTE_FLOAT                 | 4.2                       | -                         |
+| _"Variable 'a2' -> Float asignada con expresion" | CTE_STRING                | "Variable 'a2' -> Float asignada con expresion" | 47                        |
+| _"La expresion es: 3.5 + 4.2" | CTE_STRING                | "La expresion es: 3.5 + 4.2" | 28                        |
+| _1.9999                   | CTE_FLOAT                 | 1.9999                    | -                         |
+| _"Variable 'a3' -> Float asignada con 1.9999" | CTE_STRING                | "Variable 'a3' -> Float asignada con 1.9999" | 44                        |
+| _"Enter para continuar."  | CTE_STRING                | "Enter para continuar."   | 23                        |
+| _"--- Asignacion a Variables Enteras ---" | CTE_STRING                | "--- Asignacion a Variables Enteras ---" | 40                        |
+| _300                      | CTE_INTEGER               | 300                       | -                         |
+| _"La variable 'c1' -> Int asignada con 300" | CTE_STRING                | "La variable 'c1' -> Int asignada con 300" | 42                        |
+| _72                       | CTE_INTEGER               | 72                        | -                         |
+| _"La variable 'c2' -> Int asignada con 72" | CTE_STRING                | "La variable 'c2' -> Int asignada con 72" | 41                        |
+| _"--- Operaciones Aritmeticas ---" | CTE_STRING                | "--- Operaciones Aritmeticas ---" | 33                        |
+| _33                       | CTE_INTEGER               | 33                        | -                         |
+| _"La variable 'x' tiene el resultado de la expresion" | CTE_STRING                | "La variable 'x' tiene el resultado de la expresion" | 52                        |
+| _"El resultado es: "      | CTE_STRING                | "El resultado es: "       | 19                        |
+| _1                        | CTE_INTEGER               | 1                         | -                         |
+| _2                        | CTE_INTEGER               | 2                         | -                         |
 | _3                        | CTE_INTEGER               | 3                         | -                         |
-| _5                        | CTE_INTEGER               | 5                         | -                         |
-| _"El valor de 'a' es > al de 'b'" | CTE_STRING                | "El valor de 'a' es > al de 'b'" | 32                        |
-| _"El valor de 'a' no es > al de 'b" | CTE_STRING                | "El valor de 'a' no es > al de 'b" | 34                        |
+| _6                        | CTE_INTEGER               | 6                         | -                         |
+| _7                        | CTE_INTEGER               | 7                         | -                         |
+| _"--- Condicionales ---"  | CTE_STRING                | "--- Condicionales ---"   | 23                        |
+| _"Las variables a usar son c1, c2, c3 y c4" | CTE_STRING                | "Las variables a usar son c1, c2, c3 y c4" | 42                        |
+| _"--- If/Else ---"        | CTE_STRING                | "--- If/Else ---"         | 17                        |
+| _"Comparamos c1 > c2"     | CTE_STRING                | "Comparamos c1 > c2"      | 20                        |
+| _"Ingrese el valor de c1: " | CTE_STRING                | "Ingrese el valor de c1: " | 26                        |
+| _"Ingrese el valor de c2: " | CTE_STRING                | "Ingrese el valor de c2: " | 26                        |
+| _"El valor de c1 es mayor al de c2" | CTE_STRING                | "El valor de c1 es mayor al de c2" | 34                        |
+| _"El valor de c1 es menor al de c2" | CTE_STRING                | "El valor de c1 es menor al de c2" | 34                        |
+| _"--- If con AND ---"     | CTE_STRING                | "--- If con AND ---"      | 20                        |
+| _"Vamos a comparar si c1 > c2 AND c3 < c4" | CTE_STRING                | "Vamos a comparar si c1 > c2 AND c3 < c4" | 41                        |
+| _"Ingrese el valor de c3: " | CTE_STRING                | "Ingrese el valor de c3: " | 26                        |
+| _"Ingrese el valor de c4: " | CTE_STRING                | "Ingrese el valor de c4: " | 26                        |
+| _"c1 es > a c2 y c3 es < a c4 -> Parte true" | CTE_STRING                | "c1 es > a c2 y c3 es < a c4 -> Parte true" | 43                        |
+| _"--- If con OR ---"      | CTE_STRING                | "--- If con OR ---"       | 19                        |
+| _"Vamos a comparar si c1 > c2 OR c3 < c4" | CTE_STRING                | "Vamos a comparar si c1 > c2 OR c3 < c4" | 40                        |
+| _"Se cumplio c1 > c2 o c3 < c4 -> Parte true" | CTE_STRING                | "Se cumplio c1 > c2 o c3 < c4 -> Parte true" | 44                        |
+| _"--- Ciclo while ---"    | CTE_STRING                | "--- Ciclo while ---"     | 21                        |
+| _"Ingrese un valor para 'c2', lim. sup. bucle: " | CTE_STRING                | "Ingrese un valor para 'c2', lim. sup. bucle: " | 47                        |
+| _"Estoy adentro del while" | CTE_STRING                | "Estoy adentro del while" | 25                        |
+| _"--- Prueba funcion isZero() ---" | CTE_STRING                | "--- Prueba funcion isZero() ---" | 33                        |
+| _"Se evaluara 'c1' la cual contiene 2 - 2" | CTE_STRING                | "Se evaluara 'c1' la cual contiene 2 - 2" | 41                        |
+| _0                        | CTE_INTEGER               | 0                         | -                         |
+| _"La expresion es 0"      | CTE_STRING                | "La expresion es 0"       | 19                        |
+| _"Se evaluara 'c2' la cual contiene 1 + 3" | CTE_STRING                | "Se evaluara 'c2' la cual contiene 1 + 3" | 41                        |
+| _"La expresion no es 0"   | CTE_STRING                | "La expresion no es 0"    | 22                        |
 +---------------------------+---------------------------+---------------------------+---------------------------+

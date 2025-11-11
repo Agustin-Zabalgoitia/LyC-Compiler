@@ -1,0 +1,200 @@
+init {
+
+    a1 , a2 , a3 , a4 , a5 , z : Float
+    c1 , c2 , c3 , c4, x , continuar : Int
+    b1 , y : String
+}
+
+write("")
+write("Los mensajes son a modo de DEBUG")
+write("")
+
+write("--- Asignacion de Variables ---")
+
+a1 = 99999.99
+write("Variable 'a1' -> Float asignada con 99999.99")
+write(a1)
+
+a2 = 3.5 + 4.2
+write("Variable 'a2' -> Float asignada con expresion")
+write("La expresion es: 3.5 + 4.2")
+write(a2)
+
+a3 = 1.9999
+write("Variable 'a3' -> Float asignada con 1.9999")
+write(a3)
+
+#+-------------------------------------------------------+#
+
+write("Enter para continuar.")
+read(continuar)
+
+write("--- Asignacion a Variables Enteras ---")
+
+c1 = 300
+write("La variable 'c1' -> Int asignada con 300")
+write(c1)
+
+c2 = 72
+write("La variable 'c2' -> Int asignada con 72")
+write(c2)
+
+#+-------------------------------------------------------+#
+
+write("Enter para continuar.")
+read(continuar)
+
+write("--- Operaciones Aritmeticas ---")
+
+x = 33 + c2 + c1
+write("La variable 'x' tiene el resultado de la expresion")
+write("El resultado es: ")
+write(x)
+
+x = 1 + (2*3) + c1
+write("La variable 'x' tiene el resultado de la expresion")
+write("El resultado es: ")
+write(x)
+
+x = (6 / 3) + (2 * 7)
+write("La variable 'x' tiene el resultado de la expresion")
+write("El resultado es: ")
+write(x)
+
+#+-------------------------------------------------------+#
+
+write("Enter para continuar.")
+read(continuar)
+
+write("--- Condicionales ---")
+write("Las variables a usar son c1, c2, c3 y c4")
+write("")
+
+write("--- If/Else ---")
+write("")
+
+write("Comparamos c1 > c2")
+
+write("Ingrese el valor de c1: ")
+read(c1)
+
+write("Ingrese el valor de c2: ")
+read(c2)
+
+if(c1 > c2) {
+    write("El valor de c1 es mayor al de c2")
+}
+else {
+    write("El valor de c1 es menor al de c2")
+}
+
+write("")
+write("--- If con AND ---")
+write("Vamos a comparar si c1 > c2 AND c3 < c4")
+
+write("Ingrese el valor de c1: ")
+read(c1)
+
+write("Ingrese el valor de c2: ")
+read(c2)
+
+write("Ingrese el valor de c3: ")
+read(c3)
+
+write("Ingrese el valor de c4: ")
+read(c4)
+
+if(c1 > c2 AND c3 < c4) {
+    write("c1 es > a c2 y c3 es < a c4 -> Parte true")
+}
+
+write("")
+write("--- If con OR ---")
+write("Vamos a comparar si c1 > c2 OR c3 < c4")
+
+write("Ingrese el valor de c1: ")
+read(c1)
+
+write("Ingrese el valor de c2: ")
+read(c2)
+
+write("Ingrese el valor de c3: ")
+read(c3)
+
+write("Ingrese el valor de c4: ")
+read(c4)
+
+if(c1 > c2 OR c3 < c4) {
+    write("Se cumplio c1 > c2 o c3 < c4 -> Parte true")
+}
+
+#+-------------------------------------------------------+#
+
+write("Enter para continuar.")
+read(continuar)
+
+write("")
+write("--- Ciclo while ---")
+
+c1 = 1
+
+write("Ingrese un valor para 'c2', lim. sup. bucle: ")
+read(c2)
+
+while(c1 < c2) {
+    write("Estoy adentro del while")
+    c1 = c1 + 1
+}
+
+#+-------------------------------------------------------+#
+
+write("Enter para continuar.")
+read(continuar)
+
+write("")
+write("--- Prueba funcion isZero() ---")
+
+write("Se evaluara 'c1' la cual contiene 2 - 2")
+
+c1 = 2 - 2
+
+if(isZero(c1)) {
+    write("La expresion es 0")
+}
+
+write("")
+write("Se evaluara 'c2' la cual contiene 1 + 3")
+
+if(isZero(c2)) {
+    write("La expresion es 0")
+}
+else {
+    write("La expresion no es 0")
+}
+
+#+-------------------------------------------------------+#
+#+
+write("")
+write("Enter para continuar.")
+read(continuar)
+
+write("")
+write("--- Prueba funcion equalExpressions() ---")
+
+c1 = 2 + 2
+
+c2 = 4
+
+c3 = 1 + 3
+
+write("Se evaluaran c1 , c2 y c3")
+write("c1 -> 2 + 2")
+write("c2 -> 4")
+write("c3 -> 1 + 3")
+
+if(equalExpressions(c1,c2,c3)) {
+    write("Alguna de las expresiones es igual a otra")
+}
+else {
+    write("Ninguna expresion es igual a otra")
+} +#

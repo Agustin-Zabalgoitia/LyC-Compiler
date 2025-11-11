@@ -1,15 +1,12 @@
 init {
 
-    a , b , c , d : Int
-    e : String
+    a1 , a2 , a3 , a4 , a5 , z : Float
+    c1 , c2 , c3 , x , continuar : Int
+    b1 , y : String
 }
 
-a = 3
-b = 5
+c1 = 2 - 2
 
-if(a > b) {
-    write("El valor de 'a' es > al de 'b'")
-}
-else {
-    write("El valor de 'a' no es > al de 'b")
+if(isZero(c1)) {
+    write("La expresion es 0")
 }

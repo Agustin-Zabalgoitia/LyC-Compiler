@@ -338,6 +338,7 @@ functionE ::= EQUAL_EXPR OPEN_BRACKET l_exp CLOSE_BRACKET
    int contEE2 = contEE1 - 1;
 
    while (contEE1 != 2) {
+      //st.addSymbol("auxEE" + contEE1, ParserSym.IDENTIFIER);
       while (contEE2 != 0) {
          pa.insertar("auxEE"+ contEE1);
          pa.insertar("auxEE"+ contEE2);
@@ -350,6 +351,9 @@ functionE ::= EQUAL_EXPR OPEN_BRACKET l_exp CLOSE_BRACKET
       contEE1--;
       contEE2 = contEE1 - 1;
    }
+
+   //st.addSymbol("auxEE" + contEE1, ParserSym.IDENTIFIER);
+   //st.addSymbol("auxEE" + contEE2, ParserSym.IDENTIFIER);
 
    pa.insertar("auxEE"+ contEE1);
    pa.insertar("auxEE"+ contEE2);
@@ -390,6 +394,7 @@ functionZ ::= IS_ZERO OPEN_BRACKET valid_expression CLOSE_BRACKET {:
                                                                     pa.insertar("BNE");
                                                                     ut.apilarConditionStack(pa.getActualPosition());
                                                                     pa.avanzar();
+                                                                    st.addSymbol("0", ParserSym.INTEGER_CONSTANT);
                                                                   :};
 
 
