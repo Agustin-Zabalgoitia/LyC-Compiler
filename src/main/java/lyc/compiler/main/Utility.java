@@ -27,6 +27,7 @@ public class Utility {
     private Stack<String> auxStack = new Stack<>();
     private Stack<Integer> conditionStack = new Stack<>();
     private String auxCmp;
+    private int lbl = 1;
     
     //TODO: Experimentacion de EqualExpressions, totalmente debatible implementacion de GCI
     private int EE_cont = 0;
@@ -143,6 +144,14 @@ public class Utility {
             case "!=" -> "BNE";
             default -> throw new RuntimeException("Operador de comparacion no existente.");
         };
+    }
+
+    public String getLabel() {
+
+        String label = "msj_" + lbl;
+        lbl++;
+
+        return label;
     }
 
 }

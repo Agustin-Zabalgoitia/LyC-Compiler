@@ -9,10 +9,12 @@ import java.util.List;
 import java.util.Stack;
 
 import lyc.compiler.main.SymbolTable;
+import lyc.compiler.main.Utility;
 
 public class AsmCodeGenerator implements FileGenerator {
 
     SymbolTable st = SymbolTable.getSymbolTable();
+    Utility ut = Utility.getInstance();
 
     String var;
     String type;
@@ -71,7 +73,7 @@ public class AsmCodeGenerator implements FileGenerator {
 
         // Todo : Pasar toda la symbol-table a asm | Revisar los tipos de datos de las variables
 
-        List<String> tokens = Files.readAllLines(Paths.get("D:\\Universidad\\Lenguajes_y_Compiladores\\Compilador_GITHUB\\LyC-Compiler\\examples\\GCI_Assembler.txt"));
+        List<String> tokens = Files.readAllLines(Paths.get(".\\examples\\GCI_Assembler.txt"));
 
         for(String token : tokens) {
 
@@ -146,10 +148,32 @@ public class AsmCodeGenerator implements FileGenerator {
                     else {
 
                         op2 = coProStack.pop();
+
+                        if(op2.matches("[0-9].*")) {
+                            op2 = cteIntoVar(op2);
+                        }
+
                         op1 = coProStack.pop();
 
+                        if(op1.matches("[0-9].*")) {
+                            op1 = cteIntoVar(op1);
+                        }
+
+                        if(op1.charAt(0) == '"' && st.getDataType("_" + op1).equals("CTE_STRING")) {
+
+                            String label = ut.getLabel();
+                            fileWriter.write("lea si, " + label + "\n");
+                            fileWriter.write("lea si, " + op2 + "\n");
+                            fileWriter.write("mov cx, " + op1.length() + "\n");
+                            fileWriter.write("rep movsb\n");
+                            fileWriter.write("mov al, 0\n");
+                            fileWriter.write("stosb\n\n");
+                            break;
+
+                        }
+
                         fileWriter.write("fld " + op1 + " \n");
-                        fileWriter.write("fstp " + op2 + " \n");
+                        fileWriter.write("fstp " + op2 + " \n\n");
                     }
 
                     break;

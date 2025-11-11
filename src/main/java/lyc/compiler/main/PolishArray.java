@@ -44,7 +44,7 @@ public class PolishArray {
     }
 
     public void exportToFile() {
-        try (FileWriter writer = new FileWriter("D:\\Universidad\\Lenguajes_y_Compiladores\\Compilador_GITHUB\\LyC-Compiler\\examples\\GCI.txt")) {
+        try (FileWriter writer = new FileWriter(".\\examples\\GCI.txt")) {
 
             int cellWidth = 12; // ancho máximo para cada celda
 
@@ -77,7 +77,7 @@ public class PolishArray {
             for (int i = 1; i < pa.size(); i++) writer.write("┴" + "─".repeat(cellWidth));
             writer.write("┘\n");
 
-            System.out.println("✅ Tabla Polaca generada en: D:\\Universidad\\Lenguajes_y_Compiladores\\Compilador_GITHUB\\LyC-Compiler\\examples\\GCI.txt");
+            System.out.println("✅ Tabla Polaca generada en: .\\examples\\GCI.txt");
 
         } catch (IOException e) {
             System.err.println("❌ Error al generar archivo: " + e.getMessage());
@@ -85,7 +85,7 @@ public class PolishArray {
     }
 
     public void exportToAssemblerFile() {
-        String filePath = "D:\\Universidad\\Lenguajes_y_Compiladores\\Compilador_GITHUB\\LyC-Compiler\\examples\\GCI_Assembler.txt";
+        String filePath = ".\\examples\\GCI_Assembler.txt";
 
         try (FileWriter writer = new FileWriter(filePath)) {
             for (String value : pa) {

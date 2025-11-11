@@ -8,9 +8,8 @@ b	dd	?
 c	dd	?
 d	dd	?
 e	dd	?
-_2	dd	2.0
-_3	dd	3.0
-_7	dd	7.0
+_5	dd	5.0
+_"Chau"	db	"Chau"	$6	dup(?)
 
 
 
@@ -21,20 +20,16 @@ MOV AX, @DATA
 MOV DS, AX
 MOV ES, AX
 
-fld _2 
-fld _3 
-fmul
-ffree 0
-fld b 
-fadd
-ffree 0
-fld _7 
-fadd
-ffree 0
-fld _3 
-fld _2 
-fmul
-ffree 0
-fdiv
-ffree 0
+fld _5 
 fstp a 
+
+fld d 
+fstp c 
+
+lea si, msj_1
+lea si, e
+mov cx, 6
+rep movsb
+mov al, 0
+stosb
+
