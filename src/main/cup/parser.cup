@@ -152,10 +152,10 @@ if_decl ::= IF OPEN_BRACKET condicion CLOSE_BRACKET CURLY_BRACKET_OPN sentencias
                                                                                                             int posActual = pa.getActualPosition();
                                                                                                             Stack<Integer> condtStack = ut.getConditionStack();
 
-                                                                                                            while(!condtStack.isEmpty()) {
-                                                                                                                int posBranch = condtStack.pop();
-                                                                                                                pa.insertarEnPos(posBranch , "" + posActual);
-                                                                                                            }
+                                                                                                           // while(!condtStack.isEmpty()) {
+                                                                                                            int posBranch = condtStack.pop();
+                                                                                                            pa.insertarEnPos(posBranch , "" + posActual);
+                                                                                                            //}
 
                                                                                                          :};
 
@@ -176,7 +176,6 @@ if_else_decl ::= IF OPEN_BRACKET condicion CLOSE_BRACKET CURLY_BRACKET_OPN sente
 condicion ::= expression op_comp expression {:
                                                 System.out.println("Condicion de IF simple");
                                                 ut.checkConditionType();
-
                                                 pa.insertar("CMP");
                                                 pa.insertar(ut.getCmpETQ(ut.getAuxCmp()));
                                                 ut.apilarConditionStack(pa.getActualPosition());

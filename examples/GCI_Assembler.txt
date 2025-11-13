@@ -1,272 +1,28 @@
-""
-write
-"Los mensajes son a modo de DEBUG"
-write
-""
-write
-"--- Asignacion de Variables ---"
-write
-99999.99
+1
 a1
 =
-"Variable 'a1' -> Float asignada con 99999.99"
-write
+5
+a2
+=
 a1
-write
-3.5
-4.2
-+
-a2
-=
-"Variable 'a2' -> Float asignada con expresion"
-write
-"La expresion es: 3.5 + 4.2"
-write
-a2
-write
-1.9999
-a3
-=
-"Variable 'a3' -> Float asignada con 1.9999"
-write
-a3
-write
-"Enter para continuar."
-write
-continuar
-read
-"--- Asignacion a Variables Enteras ---"
-write
-300
-c1
-=
-"La variable 'c1' -> Int asignada con 300"
-write
-c1
-write
-72
-c2
-=
-"La variable 'c2' -> Int asignada con 72"
-write
-c2
-write
-"Enter para continuar."
-write
-continuar
-read
-"--- Operaciones Aritmeticas ---"
-write
-33
-c2
-+
-c1
-+
-x
-=
-"La variable 'x' tiene el resultado de la expresion"
-write
-"El resultado es: "
-write
-x
-write
 1
-2
-3
-*
-+
-c1
-+
-x
-=
-"La variable 'x' tiene el resultado de la expresion"
-write
-"El resultado es: "
-write
-x
-write
-6
-3
-/
-2
-7
-*
-+
-x
-=
-"La variable 'x' tiene el resultado de la expresion"
-write
-"El resultado es: "
-write
-x
-write
-"Enter para continuar."
-write
-continuar
-read
-"--- Condicionales ---"
-write
-"Las variables a usar son c1, c2, c3 y c4"
-write
-""
-write
-"--- If/Else ---"
-write
-""
-write
-"Comparamos c1 > c2"
-write
-"Ingrese el valor de c1: "
-write
-c1
-read
-"Ingrese el valor de c2: "
-write
-c2
-read
-c1
-c2
 CMP
-BLE
-135
-"El valor de c1 es mayor al de c2"
-write
-BI
-137
-"El valor de c1 es menor al de c2"
-write
-""
-write
-"--- If con AND ---"
-write
-"Vamos a comparar si c1 > c2 AND c3 < c4"
-write
-"Ingrese el valor de c1: "
-write
-c1
-read
-"Ingrese el valor de c2: "
-write
-c2
-read
-"Ingrese el valor de c3: "
-write
-c3
-read
-"Ingrese el valor de c4: "
-write
-c4
-read
-c1
-c2
-CMP
-BLE
-171
-c3
-c4
-CMP
-BGE
-171
-"c1 es > a c2 y c3 es < a c4 -> Parte true"
-write
-""
-write
-"--- If con OR ---"
-write
-"Vamos a comparar si c1 > c2 OR c3 < c4"
-write
-"Ingrese el valor de c1: "
-write
-c1
-read
-"Ingrese el valor de c2: "
-write
-c2
-read
-"Ingrese el valor de c3: "
-write
-c3
-read
-"Ingrese el valor de c4: "
-write
-c4
-read
-c1
-c2
-CMP
-BGT
-203
-c3
-c4
-CMP
-BGE
-205
-"Se cumplio c1 > c2 o c3 < c4 -> Parte true"
-write
-"Enter para continuar."
-write
-continuar
-read
-""
-write
-"--- Ciclo while ---"
-write
-1
-c1
-=
-"Ingrese un valor para 'c2', lim. sup. bucle: "
-write
-c2
-read
+BNE
+28
 INI
-c1
-c2
+a1
+10
 CMP
 BGE
-235
-"Estoy adentro del while"
-write
-c1
+24
+a1
 1
 +
-c1
+a1
 =
 BI
-220
-"Enter para continuar."
+11
+"Sali del while, ahora 'a1' vale: "
 write
-continuar
-read
-""
-write
-"--- Prueba funcion isZero() ---"
-write
-"Se evaluara 'c1' la cual contiene 2 - 2"
-write
-2
-2
--
-c1
-=
-c1
-0
-CMP
-BNE
-257
-"La expresion es 0"
-write
-""
-write
-"Se evaluara 'c2' la cual contiene 1 + 3"
-write
-c2
-0
-CMP
-BNE
-270
-"La expresion es 0"
-write
-BI
-272
-"La expresion no es 0"
+a1
 write

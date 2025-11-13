@@ -1,12 +1,16 @@
 init {
 
-    a1 , a2 , a3 , a4 , a5 , z : Float
-    c1 , c2 , c3 , x , continuar : Int
-    b1 , y : String
+    a1, a2 : Int
 }
 
-c1 = 2 - 2
+a1 = 1
+a2 = 5
 
-if(isZero(c1)) {
-    write("La expresion es 0")
+if(a1 == 1) {
+    while(a1 < 10) {
+        a1 = a1 + 1
+    }
+
+    write("Sali del while, ahora 'a1' vale: ")
+    write(a1)
 }
