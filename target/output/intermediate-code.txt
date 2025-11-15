@@ -5,6 +5,7 @@
 | a2                        | Int                       | -                         | -                         |
 | _1                        | CTE_INTEGER               | 1                         | -                         |
 | _5                        | CTE_INTEGER               | 5                         | -                         |
-| _10                       | CTE_INTEGER               | 10                        | -                         |
-| _"Sali del while, ahora 'a1' vale: " | CTE_STRING                | "Sali del while, ahora 'a1' vale: " | 35                        |
+| _2                        | CTE_INTEGER               | 2                         | -                         |
+| _"a1 es igual a 2"        | CTE_STRING                | "a1 es igual a 2"         | 17                        |
+| _"Estoy adentro del 2do while" | CTE_STRING                | "Estoy adentro del 2do while" | 29                        |
 +---------------------------+---------------------------+---------------------------+---------------------------+

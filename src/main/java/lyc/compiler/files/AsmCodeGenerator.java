@@ -317,7 +317,7 @@ public class AsmCodeGenerator implements FileGenerator {
                 case("BI"):
                     numET = tokens.get(contPA + 1);
                     if(Integer.parseInt(numET) < contPA) {
-                        fileWriter.write("jmp INI\n");
+                        fileWriter.write("jmp " + ut.desapilarWhileStack() + "\n");
 
                     }
                     else {
@@ -328,7 +328,8 @@ public class AsmCodeGenerator implements FileGenerator {
                     break;
 
                 case("INI"):
-                    fileWriter.write("INI:\n");
+                    fileWriter.write("INI_" + contPA + ":\n");
+                    ut.apilarWhileStack("INI_" + contPA);
 
                 default:
                     coProStack.push(token);
