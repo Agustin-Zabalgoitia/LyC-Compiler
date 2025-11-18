@@ -1,17 +1,15 @@
-3
-a
+4
+auxEE1
 =
-5
-b
+2
+2
++
+auxEE2
 =
-a
-b
+auxEE2
+auxEE1
 CMP
-BLE
+BNE
 15
-"El valor de 'a' es > al de 'b'"
-write
-BI
-17
-"El valor de 'a' no es > al de 'b"
+"Habian como minimo 2 expresiones iguales"
 write

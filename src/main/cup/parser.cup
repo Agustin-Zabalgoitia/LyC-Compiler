@@ -152,10 +152,10 @@ if_decl ::= IF OPEN_BRACKET condicion CLOSE_BRACKET CURLY_BRACKET_OPN sentencias
                                                                                                             int posActual = pa.getActualPosition();
                                                                                                             Stack<Integer> condtStack = ut.getConditionStack();
 
-                                                                                                            while(!condtStack.isEmpty()) {
-                                                                                                                int posBranch = condtStack.pop();
-                                                                                                                pa.insertarEnPos(posBranch , "" + posActual);
-                                                                                                            }
+                                                                                                           // while(!condtStack.isEmpty()) {
+                                                                                                            int posBranch = condtStack.pop();
+                                                                                                            pa.insertarEnPos(posBranch , "" + posActual);
+                                                                                                            //}
 
                                                                                                          :};
 
@@ -176,7 +176,6 @@ if_else_decl ::= IF OPEN_BRACKET condicion CLOSE_BRACKET CURLY_BRACKET_OPN sente
 condicion ::= expression op_comp expression {:
                                                 System.out.println("Condicion de IF simple");
                                                 ut.checkConditionType();
-
                                                 pa.insertar("CMP");
                                                 pa.insertar(ut.getCmpETQ(ut.getAuxCmp()));
                                                 ut.apilarConditionStack(pa.getActualPosition());
@@ -334,6 +333,17 @@ function ::= functionE {: System.out.println("Funtion equalExpressions() "); :}
 functionE ::= EQUAL_EXPR OPEN_BRACKET l_exp CLOSE_BRACKET
 {: 
    System.out.println("Funcion equalExpressions");
+   if(ut.notEmptyTypeStacks()) {
+       throw new RuntimeException("Las expresiones dentro del 'EqualExpressions' son de diferente tipo.");
+
+   }
+   ut.vaciarIntType();
+   ut.vaciarFloatType();
+
+   if(ut.getEECont() == 1) {
+       throw new RuntimeException("EqualExpressions debe tener mas de una expresion para funcionar.");
+   }
+
    int contEE1 = ut.getEECont();
    int contEE2 = contEE1 - 1;
 
@@ -367,20 +377,39 @@ functionE ::= EQUAL_EXPR OPEN_BRACKET l_exp CLOSE_BRACKET
    pa.avanzar();
 :};
 
-l_exp ::= l_exp COMA valid_expression
+l_exp ::= l_exp COMA expression
 {: 
    System.out.println("Lista de Expresiones Multiples");
    ut.increaseEECont();
    pa.insertar("auxEE"+ut.getEECont());
    pa.insertar("=");
+   st.addSymbol("auxEE" + ut.getEECont(), ParserSym.IDENTIFIER);
+
+   if(ut.notEmptyIntStack()) {
+       st.addType("auxEE" + ut.getEECont(), "Int");
+   }
+
+   if(ut.notEmptyFloatStack()) {
+       st.addType("auxEE" + ut.getEECont(), "Float");
+   }
+
 :};
 
-l_exp ::= valid_expression
+l_exp ::= expression
 {: 
    System.out.println("Expresion Simple");
    ut.increaseEECont();
    pa.insertar("auxEE"+ut.getEECont());
    pa.insertar("=");
+   st.addSymbol("auxEE" + ut.getEECont(), ParserSym.IDENTIFIER);
+
+   if(ut.notEmptyIntStack()) {
+       st.addType("auxEE" + ut.getEECont(), "Int");
+   }
+
+   if(ut.notEmptyFloatStack()) {
+       st.addType("auxEE" + ut.getEECont(), "Float");
+   }
 :};
 
 functionZ ::= IS_ZERO OPEN_BRACKET valid_expression CLOSE_BRACKET {:
@@ -390,6 +419,7 @@ functionZ ::= IS_ZERO OPEN_BRACKET valid_expression CLOSE_BRACKET {:
                                                                     pa.insertar("BNE");
                                                                     ut.apilarConditionStack(pa.getActualPosition());
                                                                     pa.avanzar();
+                                                                    st.addSymbol("0", ParserSym.INTEGER_CONSTANT);
                                                                   :};
 
 

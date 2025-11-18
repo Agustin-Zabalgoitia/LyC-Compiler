@@ -25,6 +25,7 @@ public class Utility {
     private Stack<String> paStack = new Stack<>();
     private Stack<String> auxStack = new Stack<>();
     private Stack<Integer> conditionStack = new Stack<>();
+    private Stack<String> whileStack = new Stack<>();
     private String auxCmp;
     private int lbl = 1;
     private int lbl_2 = 1;
@@ -44,6 +45,7 @@ public class Utility {
     public void apilarPa(String pa) { paStack.push(pa); }
     public void apilarAux(String aux) { auxStack.push(aux); }
     public void apilarConditionStack(int pos) { conditionStack.push(pos); }
+    public void apilarWhileStack(String etq) { whileStack.push(etq); }
 
     // desapilar
     public String desapilarId() { return idStack.pop(); }
@@ -51,6 +53,7 @@ public class Utility {
     public String desapilarPa() { return paStack.pop(); }
     public String desapilarAux() { return auxStack.pop(); }
     public Integer desapilarConditionStack() { return  conditionStack.pop(); }
+    public String desapilarWhileStack() { return whileStack.pop(); }
 
     // vaciar
     public void vaciarIntType() { intTypeStack = new Stack<>(); }
@@ -70,6 +73,14 @@ public class Utility {
             return true;
         }
         return false;
+    }
+
+    public boolean notEmptyIntStack() {
+        return !intTypeStack.empty();
+    }
+
+    public boolean notEmptyFloatStack() {
+        return !floatTypeStack.empty();
     }
 
     public void pushDataTypeId(String dataType, String id) {
@@ -164,20 +175,15 @@ public class Utility {
     public String normalizeStringLabel(String value) {
         if (value == null) return "_";
 
-        // 1️⃣ Elimina las comillas iniciales/finales si las hay
-        value = value.replaceAll("^\"|\"$", ""); // quita comillas dobles del principio y fin
+        value = value.replaceAll("^\"|\"$", "");
 
-        // 2️⃣ Reemplaza todos los caracteres que NO sean letras o números por "_"
         value = value.replaceAll("[^a-zA-Z0-9]", "_");
 
-        // 3️⃣ Elimina posibles guiones bajos duplicados consecutivos
         value = value.replaceAll("_+", "_");
 
-        // 4️⃣ Asegura que empiece con guion bajo
         if (!value.startsWith("_"))
             value = "_" + value;
 
-        // 5️⃣ Recorta si es muy largo (MASM/NASM limitan los labels)
         if (value.length() > 30)
             value = value.substring(0, 30);
 

@@ -1,15 +1,31 @@
 init {
 
-    a , b , c , d : Int
-    e : String
+    a1, a2 : Int
 }
 
-a = 3
-b = 5
+if(equalExpressions(4, 2 + 2)) {
+    write("Habian como minimo 2 expresiones iguales")
+}
 
-if(a > b) {
-    write("El valor de 'a' es > al de 'b'")
+
+#+
+a1 = 1
+a2 = 5
+
+while(a1 < a2) {
+
+    if(a1 == 2) {
+
+        write("a1 es igual a 2")
+
+        while(a1 == 2) {
+            write("Estoy adentro del 2do while")
+            a1 = a1 + 1
+        }
+
+        a1 = a1 - 1
+    }
+
+    a1 = a1 + 1
 }
-else {
-    write("El valor de 'a' no es > al de 'b")
-}
++#

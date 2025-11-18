@@ -59,7 +59,7 @@ public class AsmCodeGenerator implements FileGenerator {
             }
 
             if(row[COL_DATA_TYPE].equals("CTE_FLOAT")) {
-                fileWriter.write(row[COL_NAME] + "\t" + "dd" + "\t" + row[COL_VALUE] + "\n");
+                fileWriter.write(ut.normalizeStringLabel(row[COL_NAME]) + "\t" + "dd" + "\t" + row[COL_VALUE] + "\n");
             }
 
             /*
@@ -73,6 +73,8 @@ public class AsmCodeGenerator implements FileGenerator {
             }
 
         }
+
+
 
         fileWriter.write("\n\n\n");
 
@@ -100,33 +102,24 @@ public class AsmCodeGenerator implements FileGenerator {
                 case("*"):
                 case("/"):
 
-                    if(coProStack.size() > 1) {
+                    op2 = coProStack.pop();
 
-                        op2 = coProStack.pop();
-
-                        if(op2.matches("[0-9].*")) {
-                            op2 = cteIntoVar(op2);
-                        }
-
-                        op1 = coProStack.pop();
-
-                        if(op1.matches("[0-9].*")) {
-                            op1 = cteIntoVar(op1);
-                        }
-
-                        fileWriter.write("fld " + op1 + " \n");
-                        fileWriter.write("fld " + op2 + " \n");
+                    if(!op2.equals("temp") && op2.matches("[0-9].*")) {
+                        op2 = ut.normalizeStringLabel(op2);
                     }
-                    else if (coProStack.size() == 1) {
 
-                        var = coProStack.pop();
+                    op1 = coProStack.pop();
 
-                        if(var.matches("[0-9].*")) {
-                            var = cteIntoVar(var);
-                        }
+                    if(!op1.equals("temp") && op1.matches("[0-9].*")) {
+                        op1 = ut.normalizeStringLabel(op1);
+                    }
 
-                        fileWriter.write("fld " + var + " \n");
+                    if(!op1.equals("temp")) {
+                        fileWriter.write("fld " + op1 + " \n");
+                    }
 
+                    if(!op2.equals("temp")) {
+                        fileWriter.write("fld " + op2 + " \n");
                     }
 
                     switch(token) {
@@ -144,6 +137,7 @@ public class AsmCodeGenerator implements FileGenerator {
                     fileWriter.write("ffree st(0)\n");
 
                     flagExp = true;
+                    coProStack.push("temp");
 
                     break;
 
@@ -161,13 +155,13 @@ public class AsmCodeGenerator implements FileGenerator {
                         op2 = coProStack.pop();
 
                         if(op2.matches("[0-9].*")) {
-                            op2 = cteIntoVar(op2);
+                            op2 = ut.normalizeStringLabel(op2);
                         }
 
                         op1 = coProStack.pop();
 
                         if(op1.matches("[0-9].*")) {
-                            op1 = cteIntoVar(op1);
+                            op1 = ut.normalizeStringLabel(op1);
                         }
 
                         if(op1.charAt(0) == '"' && st.getDataType("_" + op1).equals("CTE_STRING")) {
@@ -238,23 +232,51 @@ public class AsmCodeGenerator implements FileGenerator {
 
                     op2 = coProStack.pop();
 
-                    if(op2.matches("[0-9].*")) {
+                    if(!op2.equals("temp") && op2.matches("[0-9].*")) {
                         op2 = cteIntoVar(op2);
                     }
 
                     op1 = coProStack.pop();
 
-                    if(op1.matches("[0-9].*")) {
+                    if(!op1.equals("temp") && op1.matches("[0-9].*")) {
                         op1 = cteIntoVar(op1);
                     }
 
-                    fileWriter.write("fld " + op1 + "\n");
-                    fileWriter.write("fld " + op2 + "\n");
-                    fileWriter.write("fxch\n");
-                    fileWriter.write("fcom\n");
-                    fileWriter.write("fstsw ax\n");
-                    fileWriter.write("sahf\n");
-                    break;
+                    if(op2.equals("temp") && !op1.equals("temp")) {
+                        fileWriter.write("fld " + op1 + "\n");
+                        fileWriter.write("fcom\n");
+                        fileWriter.write("fstsw ax\n");
+                        fileWriter.write("sahf\n");
+                        break;
+                    }
+
+                    if(!op2.equals("temp") && op1.equals("temp")) {
+                        fileWriter.write("fld " + op2 + "\n");
+                        fileWriter.write("fxch\n");
+                        fileWriter.write("fcom\n");
+                        fileWriter.write("fstsw ax\n");
+                        fileWriter.write("sahf\n");
+                        break;
+                    }
+
+                    if(op2.equals("temp") && op1.equals("temp")) {
+                        fileWriter.write("fxch\n");
+                        fileWriter.write("fcom\n");
+                        fileWriter.write("fstsw ax\n");
+                        fileWriter.write("sahf\n");
+                        break;
+                    }
+
+                    if(!op2.equals("temp") && !op1.equals("temp")) {
+                        fileWriter.write("fld " + op1 + "\n");
+                        fileWriter.write("fld " + op2 + "\n");
+                        fileWriter.write("fxch\n");
+                        fileWriter.write("fcom\n");
+                        fileWriter.write("fstsw ax\n");
+                        fileWriter.write("sahf\n");
+                        break;
+                    }
+
 
                 case("BGE"):
                     numET = tokens.get(contPA + 1);
@@ -295,7 +317,7 @@ public class AsmCodeGenerator implements FileGenerator {
                 case("BI"):
                     numET = tokens.get(contPA + 1);
                     if(Integer.parseInt(numET) < contPA) {
-                        fileWriter.write("jmp INI\n");
+                        fileWriter.write("jmp " + ut.desapilarWhileStack() + "\n");
 
                     }
                     else {
@@ -306,7 +328,8 @@ public class AsmCodeGenerator implements FileGenerator {
                     break;
 
                 case("INI"):
-                    fileWriter.write("INI:\n");
+                    fileWriter.write("INI_" + contPA + ":\n");
+                    ut.apilarWhileStack("INI_" + contPA);
 
                 default:
                     coProStack.push(token);
