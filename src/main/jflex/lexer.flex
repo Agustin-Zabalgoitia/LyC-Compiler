@@ -1,13 +1,16 @@
 package lyc.compiler;
 
 import java_cup.runtime.Symbol;
+import lyc.compiler.Parser;
 import lyc.compiler.ParserSym;
-import lyc.compiler.SymbolTable;
+import lyc.compiler.main.SymbolTable;
 import lyc.compiler.model.*;
-import java.math.BigInteger;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import static lyc.compiler.constants.Constants.*;
 
 %%
+
 %public
 %class Lexer
 %unicode
@@ -16,9 +19,21 @@ import java.math.BigDecimal;
 %column
 %throws CompilerException
 %eofval{
-  return symbol(ParserSym.EOF);
+  return tok(ParserSym.EOF, null);
 %eofval}
 
+%{
+private java_cup.runtime.Symbol tok(int id, Object val) {
+  System.err.printf("LEX %-18s '%s' @%d:%d%n",
+      ParserSym.terminalNames[id], yytext(), yyline+1, yycolumn+1);
+  return new java_cup.runtime.Symbol(id, yyline+1, yycolumn+1, val);
+}
+
+SymbolTable st = SymbolTable.getSymbolTable();
+
+%}
+
+/*
 %{
   private Symbol symbol(int type) {
     return new Symbol(type, yyline, yycolumn);
@@ -26,197 +41,190 @@ import java.math.BigDecimal;
   private Symbol symbol(int type, Object value) {
     return new Symbol(type, yyline, yycolumn, value);
   }
+%}
+*/
 
-  private static String cadenaException(String s, int n) {
+// Config de exceptions
 
-    s = s.replace("\n", "\\n").replace("\t","\\t");
-    return s.length() <= n ? s : s.substring(0, n-1) + "...";
-  }
+%{
+    private static String cadenaException(String s, int n) {
 
-  private SymbolTable st = SymbolTable.getSymbolTable();
+      s = s.replace("\n", "\\n").replace("\t","\\t");
+      return s.length() <= n ? s : s.substring(0, n-1) + "...";
+    }
 
 %}
 
-/* Identificador */
-ID          = [A-Za-z]+([A-Za-z]|[0-9])*
-
-/* Operadores */
-ASIG        = :=
-OP_SUMA     = \+
-OP_RESTA    = -
-OP_MULT     = \*
-OP_DIV      = \/
-
-/* Operadores Lógicos */
-OPA_MAY     = >
-OPA_MEN     = <
-OPA_IGUAL   = "=="
-OPA_MAIG    = ">="
-OPA_MEIG    = "<="
-
-/* Constantes */
-CTE_E       = [0-9]+ //Constante entera
-CTE_F       = (0"."0|([0-9][0-9]*)?)"."[0-9]* //Constante flotante
-CTE_S       = (\"[^\"\n]*\") //Constante string
-
-/* Símbolos */
-PAR_ABRE    = \(
-PAR_CIER    = \)
-LLAV_ABRE   = \{
-LLAV_CIER   = \}
-COR_ABRE    = \[
-COR_CIER    = \]
-DOS_PTOS    = :
-COMA        = ,
-
-
-/* Otros */
-COMENTARIO  = (#\+.*\+#) //Debería de soportar cualquier nivel de profundidad
 LineTerminator = \r|\n|\r\n
+InputCharacter = [^\r\n]
 Identation =  [ \t\f]
-WHITESPACES = {LineTerminator} | {Identation}
+
+Plus = "+"
+Mult = "*"
+Sub = "-"
+Div = "/"
+Assig = "="
+LE = "<="
+GE = ">="
+G = ">"
+L = "<"
+Eq = "=="
+Neq = "!="
+Colon = ":"
+Semicolon = ";"
+Coma = ","
+OpenBracket = "("
+CloseBracket = ")"
+Letter = [a-zA-Z]
+Digit = [0-9]
+CTE_S = (\"([^\n\"])*\")
+CurlyBracketOpn = "{"
+CurlyBracketClsd = "}"
+SquareBracketOpn = "["
+SquareBracketClsd = "]"
+
+
+WhiteSpace = {LineTerminator} | {Identation}
+Identifier = {Letter} ({Letter}|{Digit})*
+IntegerConstant = {Digit}+
+CuerpoComentario = ([^\+] | \+[^\#] | \+\#\+)*
+Comentario = \#\+ {CuerpoComentario} \+\#
+FloatConstant = 0?\.([0-9])* | [1-9]([0-9])* \. ([0-9])*
+
+// 0?\.([0-9])* | [1-9]([0-9])* \. ([0-9])*
 
 %%
 
-{ID}            {
-                //En vez de manejar las palabras reservas como tokens del Lexer, las identificamos como ID primero, y después verificamos si son palabras reservadas o no.
-                switch(yytext()){
-                  /*Lógica*/
-                  case "AND":
-                    return symbol(ParserSym.OPA_AND);
-                  case "OR":
-                    return symbol(ParserSym.OPA_OR);
-                  case "NOT":
-                    return symbol(ParserSym.OPA_NOT);
 
-                  /*Ifelse*/
-                  case "if":
-                    return symbol(ParserSym.IF);
-                  case "else":
-                    return symbol(ParserSym.ELSE);
+/* keywords */
 
-                  /*Bloque de Declaración de Variables*/
-                  case "init":
-                    return symbol(ParserSym.DECVAR);
+   "Int"                                   { return tok(ParserSym.INT, null); }
+   "public"                                { return tok(ParserSym.PUBLIC, null); }
+   "class"                                 { return tok(ParserSym.CLASS, null); }
+   "static"                                { return tok(ParserSym.STATIC, null); }
+   "main"                                  { return tok(ParserSym.MAIN, null); }
+   "void"                                  { return tok(ParserSym.VOID, null); }
+   "String"                                { return tok(ParserSym.STRING, null); }
+   "Float"                                 { return tok(ParserSym.FLOAT, null); }
+   "init"                                  { return tok(ParserSym.INIT, null); }
+   "if"                                    { return tok(ParserSym.IF, null); }
+   "else"                                  { return tok(ParserSym.ELSE, null); }
+   "AND"                                   { return tok(ParserSym.AND, null); }
+   "NOT"                                   { return tok(ParserSym.NOT, null); }
+   "OR"                                    { return tok(ParserSym.OR, null); }
+   "read"                                  { return tok(ParserSym.READ, null); }
+   "write"                                 { return tok(ParserSym.WRITE, null); }
+   "while"                                 { return tok(ParserSym.WHILE, null); }
+   "isZero"                                { return tok(ParserSym.IS_ZERO, null); }
+   "equalExpressions"                      { return tok(ParserSym.EQUAL_EXPR, null); }
 
-                  /*While*/
-                  case "while":
-                    return symbol(ParserSym.WHILE);
+<YYINITIAL> {
+  /* identifiers */
+  {Identifier}                             {
+                                                st.addSymbol(yytext(), ParserSym.IDENTIFIER);
+                                                return tok(ParserSym.IDENTIFIER, yytext());
+                                           }
+  /* Constants */
+  {IntegerConstant}                        {
+                                             int maxIntNumberPostive = 32767;
+                                             java.math.BigInteger num = new java.math.BigInteger(yytext());
 
-                  /*Entrada y Salida*/
-                  case "read":
-                    return symbol(ParserSym.ENTRADA);
-                  case "write":
-                    return symbol(ParserSym.SALIDA);
+                                             if(num.compareTo(BigInteger.valueOf(maxIntNumberPostive)) > 0) {
 
-                /* Funciones Especiales */
-                    case "isZero":
-                        return  symbol(ParserSym.IS_ZERO);
+                                                String msg = String.format("error lexico en linea:%d columna:%d => Constante entera numerica positiva (%d) fuera de rango (max %d)",
+                                                                            yyline + 1, yycolumn + 1, num, maxIntNumberPostive);
 
-                    case "equalExpressions":
-                        return  symbol(ParserSym.EQUAL_EXPR);
+                                                throw new InvalidIntegerException(msg);
+                                             }
 
-                  /*Tipo de Datos*/
-                  case "Int":
-                    return symbol(ParserSym.INT);
-                  case "Float":
-                    return symbol(ParserSym.FLOAT);
-                  case "String":
-                    return symbol(ParserSym.STRING);
-                  case "Boolean":
-                    return symbol(ParserSym.BOOLEAN);
+                                             st.addSymbol(yytext(), ParserSym.INTEGER_CONSTANT);
+                                             return tok(ParserSym.INTEGER_CONSTANT, Integer.valueOf(yytext()));
+                                            }
 
-                  /*Identificadores*/
-                  default:
-                    st.add(yytext(), ParserSym.ID);
-                    return symbol(ParserSym.ID, yytext());
-                }
-              }
+    {FloatConstant}                         {
+                                                    java.math.BigDecimal maxFloat = BigDecimal.valueOf(Float.MAX_VALUE);
+                                                    java.math.BigDecimal minFloat = BigDecimal.valueOf(Float.MIN_VALUE);
+                                                    java.math.BigDecimal numFloat = new java.math.BigDecimal(yytext());
 
-/* Operadores */
-{ASIG}          { return symbol(ParserSym.ASIG); }
-{OP_SUMA}       { return symbol(ParserSym.OP_SUMA); }
-{OP_RESTA}      { return symbol(ParserSym.OP_RESTA); }
-{OP_MULT}       { return symbol(ParserSym.OP_MULT); }
-{OP_DIV}        { return symbol(ParserSym.OP_DIV); }
+                                                    if(numFloat.compareTo(maxFloat) >= 0)  {
 
-/* Operadores Lógicos */
-{OPA_MAY}       { return symbol(ParserSym.OPA_MAY); }
-{OPA_MEN}       { return symbol(ParserSym.OPA_MEN); }
-{OPA_IGUAL}     { return symbol(ParserSym.OPA_IGUAL); }
-{OPA_MAIG}      { return symbol(ParserSym.OPA_MAIG); }
-{OPA_MEIG}      { return symbol(ParserSym.OPA_MEIG); }
+                                                        String msg = String.format("error lexico en linea:%d columna:%d => Constante flotante numerica (%f) fuera de rango (max %f, min %f)",
+                                                                                   yyline + 1, yycolumn + 1, numFloat, maxFloat, minFloat);
 
-/* Constantes */
-{CTE_E}         {
-                  int maxIntNumberPostive = 32767;
-                  int minIntNumberNegative = -32768;
-                  java.math.BigInteger num = new java.math.BigInteger(yytext());
+                                                        throw new RuntimeException(msg);
+                                                    }
 
-                  if(num.compareTo(BigInteger.valueOf(maxIntNumberPostive)) >= 0) {
+                                                    st.addSymbol(yytext(), ParserSym.FLOAT_CONSTANT);
+                                                    return tok(ParserSym.FLOAT_CONSTANT, Float.valueOf(yytext()));
+                                             }
 
-                      String msg = String.format("error lexico en linea:%d columna:%d => Constante entera numerica (%d) fuera de rango (max %d , min %d)",
-                                                  yyline + 1, yycolumn + 1, num, maxIntNumberPostive, minIntNumberNegative);
+    /*{NegativeConstant}                         {
+                                                    int minIntNumberNegative = -32768;
+                                                    java.math.BigInteger num = new java.math.BigInteger(yytext());
 
-                      throw new InvalidIntegerException(msg);
-                  }
+                                                    if(num.compareTo(BigInteger.valueOf(minIntNumberNegative)) < 0) {
 
-                  else if(num.compareTo(BigInteger.valueOf(minIntNumberNegative)) <= 0) {
+                                                        String msg = String.format("error lexico en linea:%d columna:%d => Constante entera numerica negativa (%d) fuera de rango (min %d)",
+                                                                                   yyline + 1, yycolumn + 1, num, minIntNumberNegative);
 
-                      String msg = String.format("error lexico en linea:%d columna:%d => Constante entera numerica (%d) fuera de rango (max %d , min %d)",
-                                                  yyline + 1, yycolumn + 1, num, maxIntNumberPostive, minIntNumberNegative);
+                                                        throw new InvalidIntegerException(msg);
 
-                      throw new InvalidIntegerException(msg);
+                                                    }
 
-                  }
+                                                    st.addSymbol(yytext(), ParserSym.NEGATIVE_CONSTANT);
+                                                    return tok(ParserSym.NEGATIVE_CONSTANT, yytext());
+                                               }*/
 
-                  st.add(yytext(), ParserSym.CTE_E);
-                  return symbol(ParserSym.CTE_E, yytext());
-                }
-{CTE_F}         {
-                  java.math.BigDecimal maxFloat = BigDecimal.valueOf(Float.MAX_VALUE);
-                  java.math.BigDecimal minFloat = BigDecimal.valueOf(Float.MIN_VALUE);
-                  java.math.BigDecimal numFloat = new java.math.BigDecimal(yytext());
+  /* Nuestro OwO */
 
-                  if(numFloat.compareTo(maxFloat) >= 0)  {
+  {CTE_S}                                  {
+                                              int maxLength = 50;
+                                              String cadena = yytext();
+                                              String c = cadena.substring(1, cadena.length()-1);
 
-                      String msg = String.format("error lexico en linea:%d columna:%d => Constante flotante numerica (%f) fuera de rango (max %f, min %f)",
-                                                  yyline + 1, yycolumn + 1, numFloat, maxFloat, minFloat);
+                                              if(c.length() > maxLength) {
+                                                  String msg = String.format("error lexico en linea:%d columna:%d => Cadena demasiado larga (max %d, llego %d) => \"%s\"",
+                                                                             yyline + 1, yycolumn + 1, maxLength, c.length(), cadenaException(c, 30));
 
-                      throw new RuntimeException(msg);
-                  }
-                  st.add(yytext(), ParserSym.CTE_F);
-                  return symbol(ParserSym.CTE_F, yytext());
-                }
-{CTE_S}         {
+                                                  throw new InvalidLengthException(msg);
+                                              }
 
-                  int maxLength = 50;
-                  String cadena = yytext();
-                  String c = cadena.substring(1, cadena.length()-1);
+                                               st.addSymbol(yytext(), ParserSym.CTE_S);
+                                               return tok(ParserSym.CTE_S, c);
+                                            }
 
-                  if(c.length() > maxLength) {
-                      String msg = String.format("error lexico en linea:%d columna:%d => Cadena demasiado larga (max %d, llego %d) => \"%s\"",
-                                                  yyline + 1, yycolumn + 1, maxLength, c.length(), cadenaException(c, 30));
+  {CurlyBracketOpn}                       { return tok(ParserSym.CURLY_BRACKET_OPN, yytext()); }
+  {CurlyBracketClsd}                      { return tok(ParserSym.CURLY_BRACKET_CLSD, yytext()); }
+  {Semicolon}                             { return tok(ParserSym.SEMICOLON, null); }
+  {SquareBracketOpn}                      { return tok(ParserSym.SQUARE_BRACKET_OPN, null); }
+  {SquareBracketClsd}                     { return tok(ParserSym.SQUARE_BRACKET_CLSD, null); }
+  {Colon}                                 { return tok(ParserSym.COLON, null); }
+  {Coma}                                  { return tok(ParserSym.COMA, null); }
 
-                      throw new InvalidLengthException(msg);
-                  }
-                  st.add(yytext(), ParserSym.CTE_S);
-                  return symbol(ParserSym.CTE_S, yytext());
-                }
+  /* operators */
+  {Plus}                                    { return tok(ParserSym.PLUS, null); }
+  {Sub}                                     { return tok(ParserSym.SUB, null); }
+  {Mult}                                    { return tok(ParserSym.MULT, null); }
+  {Div}                                     { return tok(ParserSym.DIV, null); }
+  {Assig}                                   { return tok(ParserSym.ASSIG, null); }
+  {OpenBracket}                             { return tok(ParserSym.OPEN_BRACKET, null); }
+  {CloseBracket}                            { return tok(ParserSym.CLOSE_BRACKET, null); }
+  {LE}                                      { return tok(ParserSym.LE, null); }
+  {GE}                                      { return tok(ParserSym.GE, null); }
+  {G}                                       { return tok(ParserSym.G, null); }
+  {L}                                       { return tok(ParserSym.L, null); }
+  {Eq}                                      { return tok(ParserSym.EQ, null); }
+  {Neq}                                     { return tok(ParserSym.NEQ, null); }
 
-/* Símbolos */
-{PAR_ABRE}      { return symbol(ParserSym.PAR_ABRE); }
-{PAR_CIER}      { return symbol(ParserSym.PAR_CIER); }
-{LLAV_ABRE}     { return symbol(ParserSym.LLAV_ABRE); }
-{LLAV_CIER}     { return symbol(ParserSym.LLAV_CIER); }
-{DOS_PTOS}      { return symbol(ParserSym.DOS_PTOS); }
-{COMA}          { return symbol(ParserSym.COMA); }
+  /* whitespace */
+  {WhiteSpace}                   { /* ignore */ }
+  {Comentario}                   { /* ignore */ }
 
-/*Otros*/
-{COMENTARIO}    {/* Acá no pasa nada */}
-{WHITESPACES}   {/* Acá tampoco */}
+}
 
-[^]             {
-                  String msg = String.format("error lexico en linea:%d columna %d | El caracter '%s' es invalido.", yyline + 1, yycolumn + 1, yytext());
-                  throw new UnknownCharacterException(msg);
-                }
+
+/* error fallback */
+[^]                              {
+                                    String msg = String.format("error lexico en linea:%d columna %d | El caracter '%s' es invalido.", yyline + 1, yycolumn + 1, yytext());
+                                    throw new UnknownCharacterException(msg);
+                                 }

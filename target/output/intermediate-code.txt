@@ -1,96 +1,80 @@
-LINEA | INSTRUCCIÓN
------------------------
-0     | 0         
-1     | n1        
-2     | :=        
-3     | 10        
-4     | n2        
-5     | :=        
-6     | ET        
-7     | asd       
-8     | 2         
-9     | 1         
-10    | /         
-11    | CMP       
-12    | BLE       
-13    | 25        
-14    | 10        
-15    | 1         
-16    | -         
-17    | n2        
-18    | :=        
-19    | a         
-20    | READ      
-21    | a         
-22    | WRITE     
-23    | BI        
-24    | 6         
-25    | b         
-26    | READ      
-27    | variable1 
-28    | READ      
-29    | -21       
-30    | n3        
-31    | :=        
-32    | b         
-33    | "Esto es una constante string"
-34    | CMP       
-35    | BNE       
-36    | 58        
-37    | variable1 
-38    | 18652.    
-39    | CMP       
-40    | BGE       
-41    | 58        
-42    | 2         
-43    | 2         
-44    | 0         
-45    | +         
-46    | /         
-47    | 1         
-48    | CMP       
-49    | BLT       
-50    | 56        
-51    | n4        
-52    | 7         
-53    | CMP       
-54    | BGT       
-55    | 58        
-56    | "¡Hola Mundo!"
-57    | WRITE     
-58    | .10864    
-59    | VARIABLE2 
-60    | :=        
-61    | n1        
-62    | n2        
-63    | CMP       
-64    | BEQ       
-65    | 72        
-66    | "|@{[]@#~ßðđŋ½ 5423g dsfg}g 15rwe 06df5s4."
-67    | c         
-68    | :=        
-69    | 789.3210500
-70    | VARIABLE2 
-71    | :=        
-72    | 2         
-73    | 2         
-74    | +         
-75    | 3.3       
-76    | 7         
-77    | n3        
-78    | -         
-79    | /         
-80    | 12        
-81    | *         
-82    | 1         
-83    | 1         
-84    | 2         
-85    | /         
-86    | +         
-87    | n4        
-88    | -         
-89    | *         
-90    | -         
-91    | n1        
-92    | :=        
-93    |           
++---------------------------+---------------------------+---------------------------+---------------------------+
+| NOMBRE                    | TIPODATO                  | VALOR                     | LONGITUD                  |
++---------------------------+---------------------------+---------------------------+---------------------------+
+| a1                        | Float                     | -                         | -                         |
+| a2                        | Float                     | -                         | -                         |
+| a3                        | Float                     | -                         | -                         |
+| a4                        | Float                     | -                         | -                         |
+| a5                        | Float                     | -                         | -                         |
+| z                         | Float                     | -                         | -                         |
+| c1                        | Int                       | -                         | -                         |
+| c2                        | Int                       | -                         | -                         |
+| c3                        | Int                       | -                         | -                         |
+| c4                        | Int                       | -                         | -                         |
+| x                         | Int                       | -                         | -                         |
+| continuar                 | Int                       | -                         | -                         |
+| b1                        | String                    | -                         | -                         |
+| y                         | String                    | -                         | -                         |
+| _""                       | CTE_STRING                | ""                        | 2                         |
+| _"Los mensajes son a modo de DEBUG" | CTE_STRING                | "Los mensajes son a modo de DEBUG" | 34                        |
+| _"--- Asignacion de Variables ---" | CTE_STRING                | "--- Asignacion de Variables ---" | 33                        |
+| _99999.99                 | CTE_FLOAT                 | 99999.99                  | -                         |
+| _"Variable 'a1' -> Float asignada con 99999.99" | CTE_STRING                | "Variable 'a1' -> Float asignada con 99999.99" | 46                        |
+| _3.5                      | CTE_FLOAT                 | 3.5                       | -                         |
+| _4.2                      | CTE_FLOAT                 | 4.2                       | -                         |
+| _"Variable 'a2' -> Float asignada con expresion" | CTE_STRING                | "Variable 'a2' -> Float asignada con expresion" | 47                        |
+| _"La expresion es: 3.5 + 4.2" | CTE_STRING                | "La expresion es: 3.5 + 4.2" | 28                        |
+| _1.9999                   | CTE_FLOAT                 | 1.9999                    | -                         |
+| _"Variable 'a3' -> Float asignada con 1.9999" | CTE_STRING                | "Variable 'a3' -> Float asignada con 1.9999" | 44                        |
+| _"Enter para continuar."  | CTE_STRING                | "Enter para continuar."   | 23                        |
+| _"--- Asignacion a Variables Enteras ---" | CTE_STRING                | "--- Asignacion a Variables Enteras ---" | 40                        |
+| _300                      | CTE_INTEGER               | 300                       | -                         |
+| _"La variable 'c1' -> Int asignada con 300" | CTE_STRING                | "La variable 'c1' -> Int asignada con 300" | 42                        |
+| _72                       | CTE_INTEGER               | 72                        | -                         |
+| _"La variable 'c2' -> Int asignada con 72" | CTE_STRING                | "La variable 'c2' -> Int asignada con 72" | 41                        |
+| _"--- Operaciones Aritmeticas ---" | CTE_STRING                | "--- Operaciones Aritmeticas ---" | 33                        |
+| _33                       | CTE_INTEGER               | 33                        | -                         |
+| _"La variable 'x' tiene el resultado de la expresion" | CTE_STRING                | "La variable 'x' tiene el resultado de la expresion" | 52                        |
+| _"El resultado es: "      | CTE_STRING                | "El resultado es: "       | 19                        |
+| _1                        | CTE_INTEGER               | 1                         | -                         |
+| _2                        | CTE_INTEGER               | 2                         | -                         |
+| _3                        | CTE_INTEGER               | 3                         | -                         |
+| _6                        | CTE_INTEGER               | 6                         | -                         |
+| _7                        | CTE_INTEGER               | 7                         | -                         |
+| _"--- Condicionales ---"  | CTE_STRING                | "--- Condicionales ---"   | 23                        |
+| _"Las variables a usar son c1, c2, c3 y c4" | CTE_STRING                | "Las variables a usar son c1, c2, c3 y c4" | 42                        |
+| _"--- If/Else ---"        | CTE_STRING                | "--- If/Else ---"         | 17                        |
+| _"Comparamos c1 > c2"     | CTE_STRING                | "Comparamos c1 > c2"      | 20                        |
+| _"Ingrese el valor de c1: " | CTE_STRING                | "Ingrese el valor de c1: " | 26                        |
+| _"Ingrese el valor de c2: " | CTE_STRING                | "Ingrese el valor de c2: " | 26                        |
+| _"El valor de c1 es mayor al de c2" | CTE_STRING                | "El valor de c1 es mayor al de c2" | 34                        |
+| _"El valor de c1 es menor al de c2" | CTE_STRING                | "El valor de c1 es menor al de c2" | 34                        |
+| _"--- If con AND ---"     | CTE_STRING                | "--- If con AND ---"      | 20                        |
+| _"Vamos a comparar si c1 > c2 AND c3 < c4" | CTE_STRING                | "Vamos a comparar si c1 > c2 AND c3 < c4" | 41                        |
+| _"Ingrese el valor de c3: " | CTE_STRING                | "Ingrese el valor de c3: " | 26                        |
+| _"Ingrese el valor de c4: " | CTE_STRING                | "Ingrese el valor de c4: " | 26                        |
+| _"c1 es > a c2 y c3 es < a c4 -> Parte true" | CTE_STRING                | "c1 es > a c2 y c3 es < a c4 -> Parte true" | 43                        |
+| _"--- If con OR ---"      | CTE_STRING                | "--- If con OR ---"       | 19                        |
+| _"Vamos a comparar si c1 > c2 OR c3 < c4" | CTE_STRING                | "Vamos a comparar si c1 > c2 OR c3 < c4" | 40                        |
+| _"Se cumplio c1 > c2 o c3 < c4 -> Parte true" | CTE_STRING                | "Se cumplio c1 > c2 o c3 < c4 -> Parte true" | 44                        |
+| _"--- Ciclo while ---"    | CTE_STRING                | "--- Ciclo while ---"     | 21                        |
+| _"Ingrese un valor para 'c2', lim. sup. bucle: " | CTE_STRING                | "Ingrese un valor para 'c2', lim. sup. bucle: " | 47                        |
+| _"Estoy adentro del while" | CTE_STRING                | "Estoy adentro del while" | 25                        |
+| _"--- Prueba funcion isZero() ---" | CTE_STRING                | "--- Prueba funcion isZero() ---" | 33                        |
+| _"Se evaluara 'c1' la cual contiene 2 - 2" | CTE_STRING                | "Se evaluara 'c1' la cual contiene 2 - 2" | 41                        |
+| _0                        | CTE_INTEGER               | 0                         | -                         |
+| _"La expresion es 0"      | CTE_STRING                | "La expresion es 0"       | 19                        |
+| _"Se evaluara 'c2' la cual contiene 1 + 3" | CTE_STRING                | "Se evaluara 'c2' la cual contiene 1 + 3" | 41                        |
+| _"La expresion no es 0"   | CTE_STRING                | "La expresion no es 0"    | 22                        |
+| _"--- Prueba funcion equalExpressions() ---" | CTE_STRING                | "--- Prueba funcion equalExpressions() ---" | 43                        |
+| _4                        | CTE_INTEGER               | 4                         | -                         |
+| _"Se evaluaran c1 , c2 y c3" | CTE_STRING                | "Se evaluaran c1 , c2 y c3" | 27                        |
+| _"c1 -> 2 + 2"            | CTE_STRING                | "c1 -> 2 + 2"             | 13                        |
+| _"c2 -> 4"                | CTE_STRING                | "c2 -> 4"                 | 9                         |
+| _"c3 -> 1 + 3"            | CTE_STRING                | "c3 -> 1 + 3"             | 13                        |
+| auxEE1                    | Int                       | -                         | -                         |
+| auxEE2                    | Int                       | -                         | -                         |
+| auxEE3                    | Int                       | -                         | -                         |
+| _"Alguna de las expresiones es igual a otra" | CTE_STRING                | "Alguna de las expresiones es igual a otra" | 43                        |
+| _"Ninguna expresion es igual a otra" | CTE_STRING                | "Ninguna expresion es igual a otra" | 35                        |
++---------------------------+---------------------------+---------------------------+---------------------------+

@@ -1,0 +1,15 @@
+4
+auxEE1
+=
+2
+2
++
+auxEE2
+=
+auxEE2
+auxEE1
+CMP
+BNE
+15
+"Habian como minimo 2 expresiones iguales"
+write

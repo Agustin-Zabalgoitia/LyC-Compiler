@@ -7,4 +7,6 @@ public interface FileGenerator {
 
     void generate(FileWriter fileWriter) throws IOException;
 
+
 }
+

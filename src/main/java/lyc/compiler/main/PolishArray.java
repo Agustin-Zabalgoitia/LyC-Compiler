@@ -1,104 +1,110 @@
 package lyc.compiler.main;
 
 import java.util.ArrayList;
-import java.util.Stack;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class PolishArray {
+
+    // Singleton
     private static PolishArray INSTANCE;
 
-    private ArrayList<String> data;
+    private int actualPosition;
+    private ArrayList<String> pa;
 
-    private Stack<Integer> stack;
-    private Stack<String> operatorStack;
-    private Stack<String> dataTypeStack;
+    private PolishArray() {
+        pa = new ArrayList<String>();
+        actualPosition=0;
+    }
 
-    //Another Singleton cause why not?
-    public static PolishArray getPolishArray() {
-        if (INSTANCE == null) {
+    public static PolishArray getInstance() {
+        if(INSTANCE == null) {
             INSTANCE = new PolishArray();
         }
+
         return INSTANCE;
     }
 
-    private PolishArray()  {
-        data = new ArrayList<>();
-        stack = new Stack<>();
-        operatorStack = new Stack<>();
+    public void insertar(String value) {
+        pa.add(value);
+        actualPosition++;
     }
 
-    public ArrayList<String> getArray() {
-        return data;
+    public void insertarEnPos(int pos , String value) {
+        pa.set(pos, value);
     }
 
-    public void add(String str){
-        data.add(str);
+    public int getActualPosition() {
+        return actualPosition;
     }
 
-    public void advance() {
-        data.add("");
-        stack.push(data.size()-1);
+    public void avanzar() {
+        pa.add("");
+        actualPosition++;
     }
 
-    public void stackPosition(){
-        stack.push(data.size()-1);
-    }
+    public void exportToFile() {
+        try (FileWriter writer = new FileWriter(".\\examples\\GCI.txt")) {
 
-    public void writePosition() {
-        data.set(stack.pop(), ""+(data.size()));
-    }
+            int cellWidth = 12; // ancho máximo para cada celda
 
-    public void writeNextPosition(){
-        data.set(stack.pop(), ""+(data.size()+1));
-    }
+            // Encabezado superior
+            writer.write("┌" + "─".repeat(cellWidth));
+            for (int i = 1; i < pa.size(); i++) writer.write("┬" + "─".repeat(cellWidth));
+            writer.write("┐\n");
 
-    public void stackOperator(String operator) {
-        operatorStack.push(operator);
-    }
+            // Índices
+            for (int i = 0; i < pa.size(); i++) {
+                writer.write(String.format("│%-" + cellWidth + "d", i));
+            }
+            writer.write("│\n");
 
-    public void writeOperator() {
-        String operator = operatorStack.pop();
-        if(!operatorStack.isEmpty()) {
-            String aux = operatorStack.pop();
-            if( aux.equals(Labels.NOT))
-                operator = negateLogicalOperator(operator);
-            else
-                operatorStack.push(aux);
+            // Separador
+            writer.write("├" + "─".repeat(cellWidth));
+            for (int i = 1; i < pa.size(); i++) writer.write("┼" + "─".repeat(cellWidth));
+            writer.write("┤\n");
+
+            // Valores
+            for (String value : pa) {
+                // recorto si excede los 12 caracteres
+                String v = value.length() > cellWidth ? value.substring(0, cellWidth) : value;
+                writer.write(String.format("│%-" + cellWidth + "s", v));
+            }
+            writer.write("│\n");
+
+            // Línea inferior
+            writer.write("└" + "─".repeat(cellWidth));
+            for (int i = 1; i < pa.size(); i++) writer.write("┴" + "─".repeat(cellWidth));
+            writer.write("┘\n");
+
+            System.out.println("✅ Tabla Polaca generada en: .\\examples\\GCI.txt");
+
+        } catch (IOException e) {
+            System.err.println("❌ Error al generar archivo: " + e.getMessage());
         }
-
-        data.add(operator);
     }
 
-    public void writeNegatedOperator(){
-        data.add(negateLogicalOperator(operatorStack.pop()));
-    }
+    public void exportToAssemblerFile() {
+        String filePath = ".\\examples\\GCI_Assembler.txt";
 
-    public void writePositionOnAllBlanks(){
-        while(!stack.isEmpty())
-        {
-            writePosition();
+        try (FileWriter writer = new FileWriter(filePath)) {
+            for (String value : pa) {
+                if (value != null && !value.trim().isEmpty()) {
+                    // cada símbolo en su propia línea
+                    writer.write(value.trim());
+                    writer.write(System.lineSeparator());
+                }
+            }
+
+            writer.flush();
+            System.out.println("✅ Archivo Polaca exportado en formato lineal (listo para traducción ASM): " + filePath);
+        } catch (IOException e) {
+            System.err.println("❌ Error al exportar archivo ASM: " + e.getMessage());
         }
     }
 
-    public void writeStackIntoPosition(){
-        data.add(""+stack.pop());
-    }
 
-    private String negateLogicalOperator(String operator){
-        switch (operator) {
-            case Labels.BLT:
-                return Labels.BGE;
-            case Labels.BLE:
-                return Labels.BGT;
-            case Labels.BGT:
-                return Labels.BLE;
-            case Labels.BGE:
-                return Labels.BLT;
-            case Labels.BEQ:
-                return Labels.BNE;
-            case Labels.BNE:
-                return Labels.BEQ;
-        }
-        return "";
-    }
+
 
 }
+
