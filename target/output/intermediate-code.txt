@@ -3,9 +3,9 @@
 +---------------------------+---------------------------+---------------------------+---------------------------+
 | a1                        | Int                       | -                         | -                         |
 | a2                        | Int                       | -                         | -                         |
-| _1                        | CTE_INTEGER               | 1                         | -                         |
-| _5                        | CTE_INTEGER               | 5                         | -                         |
+| _4                        | CTE_INTEGER               | 4                         | -                         |
+| auxEE1                    | Int                       | -                         | -                         |
 | _2                        | CTE_INTEGER               | 2                         | -                         |
-| _"a1 es igual a 2"        | CTE_STRING                | "a1 es igual a 2"         | 17                        |
-| _"Estoy adentro del 2do while" | CTE_STRING                | "Estoy adentro del 2do while" | 29                        |
+| auxEE2                    | Int                       | -                         | -                         |
+| _"Habian como minimo 2 expresiones iguales" | CTE_STRING                | "Habian como minimo 2 expresiones iguales" | 42                        |
 +---------------------------+---------------------------+---------------------------+---------------------------+

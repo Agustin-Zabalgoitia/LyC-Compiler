@@ -75,6 +75,14 @@ public class Utility {
         return false;
     }
 
+    public boolean notEmptyIntStack() {
+        return !intTypeStack.empty();
+    }
+
+    public boolean notEmptyFloatStack() {
+        return !floatTypeStack.empty();
+    }
+
     public void pushDataTypeId(String dataType, String id) {
 
         switch(dataType) {
@@ -167,20 +175,15 @@ public class Utility {
     public String normalizeStringLabel(String value) {
         if (value == null) return "_";
 
-        // 1️⃣ Elimina las comillas iniciales/finales si las hay
-        value = value.replaceAll("^\"|\"$", ""); // quita comillas dobles del principio y fin
+        value = value.replaceAll("^\"|\"$", "");
 
-        // 2️⃣ Reemplaza todos los caracteres que NO sean letras o números por "_"
         value = value.replaceAll("[^a-zA-Z0-9]", "_");
 
-        // 3️⃣ Elimina posibles guiones bajos duplicados consecutivos
         value = value.replaceAll("_+", "_");
 
-        // 4️⃣ Asegura que empiece con guion bajo
         if (!value.startsWith("_"))
             value = "_" + value;
 
-        // 5️⃣ Recorta si es muy largo (MASM/NASM limitan los labels)
         if (value.length() > 30)
             value = value.substring(0, 30);
 

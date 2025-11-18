@@ -3,6 +3,12 @@ init {
     a1, a2 : Int
 }
 
+if(equalExpressions(4, 2 + 2)) {
+    write("Habian como minimo 2 expresiones iguales")
+}
+
+
+#+
 a1 = 1
 a2 = 5
 
@@ -22,3 +28,4 @@ while(a1 < a2) {
 
     a1 = a1 + 1
 }
++#

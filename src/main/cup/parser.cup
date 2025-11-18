@@ -333,11 +333,21 @@ function ::= functionE {: System.out.println("Funtion equalExpressions() "); :}
 functionE ::= EQUAL_EXPR OPEN_BRACKET l_exp CLOSE_BRACKET
 {: 
    System.out.println("Funcion equalExpressions");
+   if(ut.notEmptyTypeStacks()) {
+       throw new RuntimeException("Las expresiones dentro del 'EqualExpressions' son de diferente tipo.");
+
+   }
+   ut.vaciarIntType();
+   ut.vaciarFloatType();
+
+   if(ut.getEECont() == 1) {
+       throw new RuntimeException("EqualExpressions debe tener mas de una expresion para funcionar.");
+   }
+
    int contEE1 = ut.getEECont();
    int contEE2 = contEE1 - 1;
 
    while (contEE1 != 2) {
-      //st.addSymbol("auxEE" + contEE1, ParserSym.IDENTIFIER);
       while (contEE2 != 0) {
          pa.insertar("auxEE"+ contEE1);
          pa.insertar("auxEE"+ contEE2);
@@ -350,9 +360,6 @@ functionE ::= EQUAL_EXPR OPEN_BRACKET l_exp CLOSE_BRACKET
       contEE1--;
       contEE2 = contEE1 - 1;
    }
-
-   //st.addSymbol("auxEE" + contEE1, ParserSym.IDENTIFIER);
-   //st.addSymbol("auxEE" + contEE2, ParserSym.IDENTIFIER);
 
    pa.insertar("auxEE"+ contEE1);
    pa.insertar("auxEE"+ contEE2);
@@ -370,20 +377,39 @@ functionE ::= EQUAL_EXPR OPEN_BRACKET l_exp CLOSE_BRACKET
    pa.avanzar();
 :};
 
-l_exp ::= l_exp COMA valid_expression
+l_exp ::= l_exp COMA expression
 {: 
    System.out.println("Lista de Expresiones Multiples");
    ut.increaseEECont();
    pa.insertar("auxEE"+ut.getEECont());
    pa.insertar("=");
+   st.addSymbol("auxEE" + ut.getEECont(), ParserSym.IDENTIFIER);
+
+   if(ut.notEmptyIntStack()) {
+       st.addType("auxEE" + ut.getEECont(), "Int");
+   }
+
+   if(ut.notEmptyFloatStack()) {
+       st.addType("auxEE" + ut.getEECont(), "Float");
+   }
+
 :};
 
-l_exp ::= valid_expression
+l_exp ::= expression
 {: 
    System.out.println("Expresion Simple");
    ut.increaseEECont();
    pa.insertar("auxEE"+ut.getEECont());
    pa.insertar("=");
+   st.addSymbol("auxEE" + ut.getEECont(), ParserSym.IDENTIFIER);
+
+   if(ut.notEmptyIntStack()) {
+       st.addType("auxEE" + ut.getEECont(), "Int");
+   }
+
+   if(ut.notEmptyFloatStack()) {
+       st.addType("auxEE" + ut.getEECont(), "Float");
+   }
 :};
 
 functionZ ::= IS_ZERO OPEN_BRACKET valid_expression CLOSE_BRACKET {:
